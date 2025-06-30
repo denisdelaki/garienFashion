@@ -1,1 +1,9 @@
+<app-header
+  ngSkipHydration
+  [cartItemCount]="cartItemCount"
+  (searchPerformed)="onSearchPerformed($event)"
+  (loginClicked)="onLoginClicked()"
+  (cartClicked)="onCartClicked()"
+>
+</app-header>
 <router-outlet></router-outlet>

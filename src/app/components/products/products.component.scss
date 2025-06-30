@@ -17,4 +17,24 @@
     height: auto;
     width: 100%;
   }
+  .product-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+
+    .view-details-btn {
+      flex: 1;
+    }
+
+    .favorite-btn,
+    .cart-btn mat-icon {
+      color: var(--primary-color);
+    }
+    .favorite-btn,
+    .cart-btn {
+      flex-shrink: 0;
+    }
+  }
 }

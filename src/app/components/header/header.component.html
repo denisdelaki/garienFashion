@@ -1,0 +1,162 @@
+<header class="main-header">
+  <div class="header-container">
+    <div class="logo-section">
+      <h1 class="boutique-name">Garien Fashion Boutique</h1>
+    </div>
+
+    <nav class="main-navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/" class="nav-link">Home</a>
+        </li>
+        <li
+          class="nav-item dropdown"
+          (mouseenter)="showProductsMenu = true"
+          (mouseleave)="showProductsMenu = false"
+        >
+          <a routerLink="/products" class="nav-link">Products</a>
+          <ul class="dropdown-menu" [class.show]="showProductsMenu">
+            <li>
+              <a routerLink="/products/accessories" class="dropdown-link"
+                >Accessories</a
+              >
+            </li>
+            <li>
+              <a routerLink="/products/clothing" class="dropdown-link"
+                >Clothing</a
+              >
+            </li>
+            <li>
+              <a routerLink="/products/shoes" class="dropdown-link">Shoes</a>
+            </li>
+            <li>
+              <a routerLink="/products/bags" class="dropdown-link">Bags</a>
+            </li>
+          </ul>
+        </li>
+        <li
+          class="nav-item dropdown"
+          (mouseenter)="showTailoredMenu = true"
+          (mouseleave)="showTailoredMenu = false"
+        >
+          <a routerLink="/tailoring" class="nav-link">Tailored</a>
+          <ul class="dropdown-menu" [class.show]="showTailoredMenu">
+            <li>
+              <a routerLink="/tailoring/custom-suits" class="dropdown-link"
+                >Custom Suits</a
+              >
+            </li>
+            <li>
+              <a routerLink="/tailoring/alterations" class="dropdown-link"
+                >Alterations</a
+              >
+            </li>
+            <li>
+              <a routerLink="/tailoring/bespoke" class="dropdown-link"
+                >Bespoke</a
+              >
+            </li>
+            <li>
+              <a routerLink="/tailoring/consultation" class="dropdown-link"
+                >Consultation</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/contact" class="nav-link">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/blog" class="nav-link">Blog</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button class="action-btn search-btn" (click)="toggleSearch()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
+      <button class="action-btn login-btn" (click)="openLogin()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </button>
+      <button mat-icon-button class="action-btn cart-btn" (click)="openCart()">
+        <mat-icon>shopping_cart</mat-icon>
+        <span class="cart-count">{{ cartItemCount }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Bar (toggleable) -->
+  <div class="search-container" [class.show]="showSearch">
+    <input
+      type="text"
+      placeholder="Search products..."
+      class="search-input"
+      [(ngModel)]="searchQuery"
+    />
+    <button
+      mat-raised-button
+      color="primary"
+      class="search-submit"
+      (click)="performSearch()"
+    >
+      Search
+    </button>
+  </div>
+
+  <!-- Gender Navigation - Only show on products pages -->
+  @if(showGenderNavigation){
+  <div class="gender-navigation">
+    <div class="gender-nav-container">
+      <button
+        class="gender-btn"
+        [class.active]="selectedGender === 'women'"
+        (click)="filterByGender('women')"
+      >
+        Women
+      </button>
+      <button
+        class="gender-btn"
+        [class.active]="selectedGender === 'men'"
+        (click)="filterByGender('men')"
+      >
+        Men
+      </button>
+      <button
+        class="gender-btn"
+        [class.active]="selectedGender === 'kids'"
+        (click)="filterByGender('kids')"
+      >
+        Kids
+      </button>
+      <button
+        class="gender-btn"
+        [class.active]="selectedGender === 'all'"
+        (click)="filterByGender('all')"
+      >
+        All
+      </button>
+    </div>
+  </div>
+  }
+</header>

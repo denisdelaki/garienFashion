@@ -5,7 +5,31 @@
     <h3>{{ product.name }}</h3>
     <p>{{ product.description }}</p>
     <p>{{ product.price | currency }}</p>
-    <button mat-raised-button color="primary">View Details</button>
+    <div class="product-actions">
+      <button
+        mat-icon-button
+        [color]="isFavorite(product.id) ? 'warn' : 'accent'"
+        class="favorite-btn"
+        (click)="toggleFavorite(product)"
+        [attr.aria-label]="
+          isFavorite(product.id) ? 'Remove from favorites' : 'Add to favorites'
+        "
+      >
+        <mat-icon>{{ getFavoriteIcon(product.id) }}</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" class="view-details-btn">
+        View Details
+      </button>
+      <button
+        mat-icon-button
+        color="primary"
+        class="cart-btn"
+        (click)="addToCart(product)"
+        aria-label="Add to cart"
+      >
+        <mat-icon>add_shopping_cart</mat-icon>
+      </button>
+    </div>
   </div>
   } @if(products.length === 0) {
   <div class="no-products">

@@ -1,0 +1,228 @@
+.main-header {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-section {
+  .boutique-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+}
+
+.main-navigation {
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+
+    .nav-item {
+      position: relative;
+
+      .nav-link {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #922529;
+        }
+      }
+
+      &.dropdown {
+        .dropdown-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background: white;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border-radius: 4px;
+          padding: 0.5rem 0;
+          min-width: 200px;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-10px);
+          transition: all 0.3s ease;
+          list-style: none;
+
+          &.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+
+          .dropdown-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: #f8f9fa;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+
+  .action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    position: relative;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    svg {
+      color: #333;
+    }
+  }
+
+  .cart-btn {
+    color: var(--primary-color);
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+  }
+}
+
+.search-container {
+  background-color: #f8f9fa;
+  padding: 1rem 2rem;
+  display: none;
+  gap: 1rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &.show {
+    display: flex;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: #922529;
+    }
+  }
+
+  .search-submit {
+    padding: 0.5rem 1rem;
+    background-color: #922529;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+
+.gender-navigation {
+  background: #2c3e50;
+  padding: 0.75rem 0;
+
+  .gender-nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .gender-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: white;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #e9ecef;
+        color: #333;
+      }
+
+      &.active {
+        background-color: #922529;
+        color: white;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .main-navigation {
+    .nav-menu {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  .gender-nav-container {
+    gap: 1rem;
+
+    .gender-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+    }
+  }
+}
