@@ -1,0 +1,17 @@
+<div class="products-grid">
+  @for(product of products; track product.id) {
+  <div class="product-card">
+    <img [src]="product.images[0]" alt="{{ product.name }}" />
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.description }}</p>
+    <p>{{ product.price | currency }}</p>
+    <button mat-raised-button color="primary">View Details</button>
+  </div>
+  } @if(products.length === 0) {
+  <div class="no-products">
+    <p>
+      No products found{{ category ? " in " + category + " category" : "" }}.
+    </p>
+  </div>
+  }
+</div>
