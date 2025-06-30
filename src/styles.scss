@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #922529; /* Deep Red */
+  --secondary-color: #008c51; /* Rich Green */
+  --accent-color: #ffd700; /* Gold */
+  --background-color: #ffffff; /* White */
+  --text-color: #333333; /* Dark Gray */
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+}
+
+/* Import fonts from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap");
+
+/* Override Angular Material primary button colors */
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: var(--primary-color);
+  --mdc-protected-button-label-text-color: white;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  --mdc-protected-button-container-color: #7a1f22; /* Darker shade of your primary */
+}
