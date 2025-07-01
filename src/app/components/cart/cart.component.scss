@@ -270,13 +270,14 @@
     padding: 12px;
     font-size: 16px;
     font-weight: 500;
+    border-color: #922529;
   }
 
   .checkout-btn {
-    background-color: #2196f3;
+    background-color: #922529;
 
     &:hover:not(:disabled) {
-      background-color: #1976d2;
+      background-color: #a32d31;
     }
 
     &:disabled {
