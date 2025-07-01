@@ -7,7 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
-import { Product } from '../../models/product/product.model';
+import { Product } from '../../models/product.model';
 
 export interface CartItem {
   product: Product;

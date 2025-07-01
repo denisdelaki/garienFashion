@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../models/product/product.model';
+import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,12 +8,16 @@ export class ProductService {
   constructor() {}
 
   private products: Product[] = [
+    // Regular Products
     {
       id: 1,
       name: 'Imported Dress',
       description: 'Stylish imported dress',
       price: 5000,
       category: 'Clothing',
+      isTailored: false,
+      isFeatured: true,
+      isNewArrival: true,
       images: [
         'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
@@ -24,337 +28,241 @@ export class ProductService {
       description: 'High-quality leather sandals',
       price: 2500,
       category: 'Sandals',
+      isTailored: false,
       images: [
         'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
+
+    // Tailored Products
     {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
+      id: 3,
+      name: "Men's Tailored Suit",
+      description:
+        'Custom-fit suit for men with premium wool fabric and hand-stitched details.',
+      price: 15000,
+      category: 'suits',
+      gender: 'Men',
+      isTailored: true,
+      isFeatured: true,
+      isNewArrival: true,
+      tailoringDetails: {
+        fabricType: 'Premium Wool',
+        constructionType: 'Hand-stitched',
+        fittingIncluded: true,
+        alterationsIncluded: 2,
+        deliveryTime: '2-3 weeks',
+      },
+      images: [
+        'https://images.unsplash.com/photo-1631682705590-5c1aa5dc67a3?q=80&w=1316&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1747171693567-702799baae9c?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1575111100769-15422779fb10?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      ],
+    },
+    {
+      id: 4,
+      name: "Women's Tailored Kitenge Dress",
+      description:
+        'Elegant tailored dress with authentic African prints and custom fitting.',
+      price: 8000,
+      category: 'dresses',
+      gender: 'Women',
+      isTailored: true,
+      isFeatured: true,
+      isNewArrival: true,
+      tailoringDetails: {
+        fabricType: 'Authentic Kitenge',
+        constructionType: 'Machine-stitched with hand finishing',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '1-2 weeks',
+      },
+      images: [
+        'https://images.unsplash.com/photo-1663044023009-cfdb6dd6b89c?q=80&w=1307&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1687052034884-391a9e5ea8dd?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      ],
+    },
+    {
+      id: 5,
+      name: "Kids' Tailored School Uniform",
+      description:
+        'Perfectly fitted school uniform tailored for growing children.',
+      price: 3000,
+      category: 'uniforms',
+      gender: 'Kids',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Durable Cotton Blend',
+        constructionType: 'Machine-stitched',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '1 week',
+      },
+      images: [
+        'https://images.unsplash.com/photo-1706117386176-e0eab81b9abc?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://media.istockphoto.com/id/1252924010/photo/schoolgirl-in-a-school-near-masai-mara-game-reserve-in-kenya.webp?a=1&b=1&s=612x612&w=0&k=20&c=0A1k_FCMmFDytQp1E5C357oFdtO7O2S8f3X_b5QtrDQ=',
+        'https://media.istockphoto.com/id/477839987/photo/african-school-kids.webp?a=1&b=1&s=612x612&w=0&k=20&c=3-ENVc-2jTwXgTa0L3pLm1okQBNkHo9rY8U-ZINQyCg=',
+      ],
+    },
+    {
+      id: 6,
+      name: 'Unisex Tailored Ankara Shirt',
+      description:
+        'Stylish tailored shirt with vibrant Ankara patterns, suitable for all.',
       price: 5000,
-      category: 'Clothing',
+      category: 'shirts',
+      gender: 'Unisex',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Premium Ankara Cotton',
+        constructionType: 'Machine-stitched with hand details',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '1-2 weeks',
+      },
       images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://media.istockphoto.com/id/1408649339/photo/family-posing-at-home.webp?a=1&b=1&s=612x612&w=0&k=20&c=LjdAi1QKwUzIs3mowlqxGFanA6QGL1c86jSg1Pm3hFs=',
+        'https://media.istockphoto.com/id/1414595468/photo/people-posing-at-park-at-summer-holiday.webp?a=1&b=1&s=612x612&w=0&k=20&c=GBN3sUIKiSj6srqIN0ZBFwYoPaB11NyKvIgJHziHel8=',
       ],
     },
     {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
+      id: 7,
+      name: "Men's Tailored Blazer",
+      description:
+        'Professional blazer with perfect fit and premium construction.',
+      price: 12000,
+      category: 'jackets',
+      gender: 'Men',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Wool Blend',
+        constructionType: 'Half-canvassed construction',
+        fittingIncluded: true,
+        alterationsIncluded: 2,
+        deliveryTime: '2-3 weeks',
+      },
       images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1631682705590-5c1aa5dc67a3?q=80&w=1316&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
     {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
+      id: 8,
+      name: "Women's Tailored Pencil Skirt",
+      description:
+        'Elegant pencil skirt with perfect fit and professional finish.',
+      price: 4500,
+      category: 'skirts',
+      gender: 'Women',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Stretch Wool',
+        constructionType: 'Machine-stitched with hand finishing',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '1 week',
+      },
       images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1663044023009-cfdb6dd6b89c?q=80&w=1307&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
     {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
+      id: 9,
+      name: "Men's Tailored Dress Pants",
+      description: 'Classic dress pants with custom fit and premium fabric.',
+      price: 6000,
+      category: 'pants',
+      gender: 'Men',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Wool Gabardine',
+        constructionType: 'Machine-stitched',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '1 week',
+      },
       images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1575111100769-15422779fb10?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
     {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
+      id: 10,
+      name: 'Traditional Tailored Dashiki',
+      description:
+        'Authentic dashiki with traditional embroidery and custom fit.',
+      price: 7500,
+      category: 'traditional',
+      gender: 'Unisex',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Traditional Cotton',
+        constructionType: 'Hand-embroidered details',
+        fittingIncluded: true,
+        alterationsIncluded: 1,
+        deliveryTime: '2-3 weeks',
+      },
       images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://media.istockphoto.com/id/1414595468/photo/people-posing-at-park-at-summer-holiday.webp?a=1&b=1&s=612x612&w=0&k=20&c=GBN3sUIKiSj6srqIN0ZBFwYoPaB11NyKvIgJHziHel8=',
       ],
     },
     {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
+      id: 11,
+      name: "Women's Tailored Evening Gown",
+      description:
+        'Stunning evening gown with custom fit and luxurious fabric.',
+      price: 18000,
+      category: 'dresses',
+      gender: 'Women',
+      isTailored: true,
+      tailoringDetails: {
+        fabricType: 'Silk Chiffon',
+        constructionType: 'Hand-sewn with beading',
+        fittingIncluded: true,
+        alterationsIncluded: 3,
+        deliveryTime: '3-4 weeks',
+      },
       images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1687052034884-391a9e5ea8dd?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
     {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
+      id: 12,
+      name: "Men's Tailored Tuxedo",
+      description: 'Formal tuxedo with peak lapels and satin details.',
+      price: 20000,
+      category: 'suits',
+      gender: 'Men',
+      isTailored: true,
+      isFeatured: true,
+      tailoringDetails: {
+        fabricType: 'Super 120s Wool',
+        constructionType: 'Full-canvassed construction',
+        fittingIncluded: true,
+        alterationsIncluded: 3,
+        deliveryTime: '3-4 weeks',
+      },
       images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'featured',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'featured',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'featured',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'featured',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 1,
-      name: 'Imported Dress',
-      description: 'Stylish imported dress',
-      price: 5000,
-      category: 'Clothing',
-      images: [
-        'https://images.unsplash.com/photo-1709809081557-78f803ce93a0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      ],
-    },
-    {
-      id: 2,
-      name: 'Leather Sandals',
-      description: 'High-quality leather sandals',
-      price: 2500,
-      category: 'Sandals',
-      images: [
-        'https://images.unsplash.com/photo-1630407332126-70ebb700976b?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.unsplash.com/photo-1747171693567-702799baae9c?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ],
     },
   ];
 
+  // Get all products
   getProducts(): Product[] {
     return this.products;
   }
 
-   getProductById(id: number): Product | undefined {
-    return this.products.find(product => product.id === id);
+  // Get product by ID
+  getProductById(id: number): Product | undefined {
+    return this.products.find((product) => product.id === id);
+  }
+
+  // Get products by gender
+  getProductsByGender(gender: 'men' | 'Women' | 'kids' | 'unisex'): Product[] {
+    return this.products.filter((product) => product.gender === gender);
+  }
+
+  // Get only tailored products
+  getTailoredProducts(): Product[] {
+    return this.products.filter((product) => product.isTailored === true);
   }
 }

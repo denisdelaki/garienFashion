@@ -9,7 +9,14 @@ import { ProductDetailsComponent } from './components/product-details/product-de
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
-  { path: 'products/:id', component: ProductDetailsComponent },
+  {
+    path: 'products/:id',
+    loadComponent: () =>
+      import('./components/product-details/product-details.component').then(
+        (m) => m.ProductDetailsComponent
+      ),
+  },
+
   { path: 'tailoring', component: TailoringComponent },
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },

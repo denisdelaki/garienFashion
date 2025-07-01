@@ -1,1 +1,567 @@
-<p>tailoring works!</p>
+<div class="tailoring-container">
+  <div class="tailoring-header" @fadeSlideIn>
+    <h1>Custom Tailoring Services</h1>
+    <p class="subtitle">
+      Craft your unique style with our expert tailoring, inspired by Kenya’s
+      vibrant heritage.
+    </p>
+  </div>
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="toggleRequestForm()"
+      class="request-btn"
+    >
+      <mat-icon>{{ showRequestForm ? "close" : "add" }}</mat-icon>
+      {{ showRequestForm ? "Cancel Request" : "Request Custom Tailoring" }}
+    </button>
+  </div>
+  <!-- Filters -->
+  <div class="filter-section" @fadeSlideIn>
+    <mat-card class="filter-card">
+      <mat-card-content>
+        <h3>Browse Our Tailored Collections</h3>
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label>Category:</label>
+            <div class="filter-buttons">
+              <button
+                *ngFor="let category of categories"
+                mat-button
+                [class.active]="selectedCategory === category.value"
+                (click)="onCategoryChange(category.value)"
+              >
+                {{ category.label }}
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label>Gender:</label>
+            <div class="filter-buttons">
+              <button
+                *ngFor="let gender of genders"
+                mat-button
+                [class.active]="selectedGender === gender.value"
+                (click)="onGenderChange(gender.value)"
+              >
+                {{ gender.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Products Section -->
+  <div class="products-section" *ngIf="!showRequestForm" @fadeSlideIn>
+    <div class="section-header">
+      <h2>
+        {{ getCategoryLabel(selectedCategory) }}
+        {{
+          selectedGender === "all" ? "" : " - " + getGenderLabel(selectedGender)
+        }}
+        Tailored Items
+      </h2>
+
+      <p class="section-description">
+        Expertly crafted garments with attention to detail and perfect fit,
+        inspired by Kenyan artistry.
+      </p>
+    </div>
+    <app-products
+      [category]="getCurrentCategory()"
+      [gender]="getCurrentGender()"
+    ></app-products>
+  </div>
+
+  <!-- Services Info Section -->
+  <div class="services-info" *ngIf="!showRequestForm" @fadeSlideIn>
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="header-icon">star</mat-icon>
+          Our Tailoring Services
+        </mat-card-title>
+        <mat-card-subtitle
+          >Discover the artistry and precision behind our bespoke tailoring
+          services.</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <div class="services-grid" @staggerItems>
+          <div class="service-item">
+            <mat-icon class="service-icon">design_services</mat-icon>
+            <h4>Custom Design</h4>
+            <p>
+              Create unique pieces tailored to your style, inspired by Kenya’s
+              rich cultural heritage.
+            </p>
+          </div>
+          <div class="service-item">
+            <mat-icon class="service-icon">straighten</mat-icon>
+            <h4>Perfect Fit</h4>
+            <p>
+              Precise measurements ensure your garment fits like a second skin.
+            </p>
+          </div>
+          <div class="service-item">
+            <mat-icon class="service-icon">palette</mat-icon>
+            <h4>Premium Materials</h4>
+            <p>
+              Choose from high-quality fabrics, including vibrant Kitenge
+              prints.
+            </p>
+          </div>
+          <div class="service-item">
+            <mat-icon class="service-icon">schedule</mat-icon>
+            <h4>Flexible Timeline</h4>
+            <p>Standard, express, or urgent options to suit your schedule.</p>
+          </div>
+          <div class="service-item">
+            <mat-icon class="service-icon">support_agent</mat-icon>
+            <h4>Expert Consultation</h4>
+            <p>
+              Collaborate with our skilled tailors for a personalized
+              experience.
+            </p>
+          </div>
+          <div class="service-item">
+            <mat-icon class="service-icon">verified</mat-icon>
+            <h4>Quality Guarantee</h4>
+            <p>100% satisfaction with every stitch, or we make it right.</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Process Steps Section -->
+  <div class="process-section" *ngIf="!showRequestForm" @fadeSlideIn>
+    <mat-card class="process-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="header-icon">timeline</mat-icon>
+          Our Tailoring Process
+        </mat-card-title>
+        <mat-card-subtitle
+          >From vision to reality, crafted with Kenyan artistry and
+          precision.</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <div class="process-steps" @staggerItems>
+          <div class="step">
+            <div class="step-icon"><mat-icon>chat</mat-icon></div>
+            <div class="step-content">
+              <h4>Consultation</h4>
+              <p>
+                Share your vision with our expert tailors to design your perfect
+                garment.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><mat-icon>straighten</mat-icon></div>
+            <div class="step-content">
+              <h4>Design & Measurements</h4>
+              <p>
+                Create detailed designs and take precise measurements for a
+                flawless fit.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><mat-icon>palette</mat-icon></div>
+            <div class="step-content">
+              <h4>Material Selection</h4>
+              <p>
+                Select from premium fabrics, including vibrant Kenyan Kitenge
+                prints.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><mat-icon>build</mat-icon></div>
+            <div class="step-content">
+              <h4>Crafting</h4>
+              <p>
+                Our artisans meticulously craft your garment with unparalleled
+                attention to detail.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><mat-icon>local_shipping</mat-icon></div>
+            <div class="step-content">
+              <h4>Fitting & Delivery</h4>
+              <p>
+                Final fitting and delivery of your bespoke garment, ready to
+                wear.
+              </p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Request Form Section (from previous response, unchanged) -->
+  <div class="request-form-container" *ngIf="showRequestForm">
+    <mat-card class="request-form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>design_services</mat-icon>
+          Custom Tailoring Request
+        </mat-card-title>
+        <mat-card-subtitle>
+          Tell us about your dream garment and we'll make it a reality
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Estimated Price Display -->
+        <div class="price-estimate" *ngIf="estimatedPrice > 0">
+          <mat-card class="estimate-card">
+            <mat-card-content>
+              <div class="estimate-content">
+                <mat-icon>calculate</mat-icon>
+                <div class="estimate-text">
+                  <h4>Estimated Price</h4>
+                  <p class="price">{{ formatCurrency(estimatedPrice) }}</p>
+                  <small
+                    >*Final price may vary based on materials and
+                    complexity</small
+                  >
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <form [formGroup]="tailoringRequestForm" (ngSubmit)="onSubmitRequest()">
+          <!-- Personal Information -->
+          <div class="form-section">
+            <h3>Personal Information</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Full Name</mat-label>
+                <input
+                  matInput
+                  formControlName="customerName"
+                  placeholder="Enter your full name"
+                />
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('customerName')?.invalid &&
+                    tailoringRequestForm.get('customerName')?.touched
+                  "
+                >
+                  {{ getErrorMessage("customerName") }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  type="email"
+                  formControlName="email"
+                  placeholder="your@email.com"
+                />
+                <mat-icon matSuffix>email</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('email')?.invalid &&
+                    tailoringRequestForm.get('email')?.touched
+                  "
+                >
+                  {{ getErrorMessage("email") }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Phone Number</mat-label>
+                <input
+                  matInput
+                  formControlName="phone"
+                  placeholder="+1 (555) 123-4567"
+                />
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('phone')?.invalid &&
+                    tailoringRequestForm.get('phone')?.touched
+                  "
+                >
+                  {{ getErrorMessage("phone") }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Garment Details -->
+          <div class="form-section">
+            <h3>Garment Details</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option
+                    *ngFor="let category of categories.slice(1)"
+                    [value]="category.value"
+                  >
+                    {{ category.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>category</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('category')?.invalid &&
+                    tailoringRequestForm.get('category')?.touched
+                  "
+                >
+                  {{ getErrorMessage("category") }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender">
+                  <mat-option
+                    *ngFor="let gender of genders.slice(1)"
+                    [value]="gender.value"
+                  >
+                    {{ gender.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>wc</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('gender')?.invalid &&
+                    tailoringRequestForm.get('gender')?.touched
+                  "
+                >
+                  {{ getErrorMessage("gender") }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Style</mat-label>
+                <mat-select formControlName="style">
+                  <mat-option *ngFor="let style of styles" [value]="style">
+                    {{ style }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>style</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('style')?.invalid &&
+                    tailoringRequestForm.get('style')?.touched
+                  "
+                >
+                  {{ getErrorMessage("style") }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Size</mat-label>
+                <mat-select formControlName="size">
+                  <mat-option *ngFor="let size of sizes" [value]="size">
+                    {{ size }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>straighten</mat-icon>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('size')?.invalid &&
+                    tailoringRequestForm.get('size')?.touched
+                  "
+                >
+                  {{ getErrorMessage("size") }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Measurements (Optional) -->
+          <div class="form-section" formGroupName="measurements">
+            <h3>Measurements (Optional - in inches)</h3>
+            <p class="measurements-note">
+              <mat-icon>info</mat-icon>
+              Providing measurements helps us give you a more accurate quote.
+              We'll take precise measurements during consultation.
+            </p>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="fifth-width">
+                <mat-label>Chest</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="chest"
+                  placeholder="36"
+                  min="0"
+                  max="60"
+                />
+                <span matSuffix>in</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="fifth-width">
+                <mat-label>Waist</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="waist"
+                  placeholder="32"
+                  min="0"
+                  max="60"
+                />
+                <span matSuffix>in</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="fifth-width">
+                <mat-label>Hips</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="hips"
+                  placeholder="38"
+                  min="0"
+                  max="60"
+                />
+                <span matSuffix>in</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="fifth-width">
+                <mat-label>Length</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="length"
+                  placeholder="30"
+                  min="0"
+                  max="60"
+                />
+                <span matSuffix>in</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="fifth-width">
+                <mat-label>Sleeves</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="sleeves"
+                  placeholder="24"
+                  min="0"
+                  max="40"
+                />
+                <span matSuffix>in</span>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Budget and Timeline -->
+          <div class="form-section">
+            <h3>Budget & Timeline</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Budget (USD)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="budget"
+                  placeholder="500"
+                  min="50"
+                  max="10000"
+                />
+                <span matPrefix>$</span>
+                <mat-error
+                  *ngIf="
+                    tailoringRequestForm.get('budget')?.invalid &&
+                    tailoringRequestForm.get('budget')?.touched
+                  "
+                >
+                  {{ getErrorMessage("budget") }}
+                </mat-error>
+                <mat-hint>Minimum budget: $50</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Timeline</mat-label>
+                <mat-select formControlName="urgency">
+                  <mat-option
+                    *ngFor="let option of urgencyOptions"
+                    [value]="option.value"
+                  >
+                    {{ getUrgencyLabel(option) }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>schedule</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-section">
+            <h3>Description</h3>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Describe your vision</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="4"
+                placeholder="Please describe the garment you want, including colors, specific details, inspiration, or any special requirements..."
+                maxlength="1000"
+              >
+              </textarea>
+              <mat-hint align="end"
+                >{{
+                  tailoringRequestForm.get("description")?.value?.length || 0
+                }}/1000</mat-hint
+              >
+              <mat-error
+                *ngIf="
+                  tailoringRequestForm.get('description')?.invalid &&
+                  tailoringRequestForm.get('description')?.touched
+                "
+              >
+                {{ getErrorMessage("description") }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="tailoringRequestForm.invalid"
+              class="submit-btn"
+            >
+              <mat-icon>send</mat-icon>
+              Submit Request
+            </button>
+            <button
+              mat-button
+              type="button"
+              (click)="toggleRequestForm()"
+              class="cancel-btn"
+            >
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

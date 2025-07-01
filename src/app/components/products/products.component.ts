@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
-import { Product } from '../../models/product/product.model';
+import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { RouterModule } from '@angular/router';
 
@@ -29,6 +29,8 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() category: string = '';
   @Input() gender: string = '';
   @Input() limit?: number;
+  @Input() isTailored?: boolean;
+  @Input() isFeatured?: boolean;
 
   favoriteProducts: Set<number> = new Set();
   private favoritesSubscription: Subscription = new Subscription();
@@ -101,6 +103,18 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     // Limit number of products if specified
     if (this.limit && this.limit > 0) {
       filteredProducts = filteredProducts.slice(0, this.limit);
+    }
+    // Filter tailored products if isTailored is true
+    if (this.isTailored) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.isTailored === true
+      );
+    }
+    // Filter featured products if isFeatured is true
+    if (this.isFeatured) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.isFeatured === true
+      );
     }
 
     this.products = filteredProducts;

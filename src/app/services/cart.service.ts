@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Product } from '../models/product/product.model';
+import { Product } from '../models/product.model';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface CartItem {

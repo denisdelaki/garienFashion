@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../../models/product/product.model';
+import { Location } from '@angular/common';
+import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +22,7 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private productService: ProductService,
     private cartService: CartService,
     private snackBar: MatSnackBar,
@@ -31,6 +33,10 @@ export class ProductDetailsComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.product = this.productService.getProductById(id);
     this.selectedImage = this.product?.images[0]; // Set default image
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   buyNow(): void {
@@ -54,6 +60,7 @@ export class ProductDetailsComponent implements OnInit {
   changeImage(image: string): void {
     this.selectedImage = image;
   }
+
   getCurrentUrl(): string {
     if (isPlatformBrowser(this.platformId)) {
       return window.location.href;
