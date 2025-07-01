@@ -34,3 +34,16 @@ h6 {
 .mat-mdc-raised-button.mat-primary:hover {
   --mdc-protected-button-container-color: #7a1f22; /* Darker shade of your primary */
 }
+
+.custom-snackbar {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.custom-snackbar .mat-mdc-snack-bar-action {
+  color: white !important;
+}
+
+.custom-snackbar .mat-mdc-button {
+  color: white !important;
+}

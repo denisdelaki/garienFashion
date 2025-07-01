@@ -139,7 +139,8 @@ export class CartComponent implements OnInit, OnDestroy {
     const snackBarRef = this.snackBar.open(message, action || 'Close', {
       duration: action === 'Undo' ? 5000 : 3000,
       horizontalPosition: 'right',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
+      panelClass: ['custom-snackbar'],
     });
 
     if (action === 'Undo' && actionCallback) {

@@ -17,7 +17,11 @@
       >
         <mat-icon>{{ getFavoriteIcon(product.id) }}</mat-icon>
       </button>
-      <button mat-raised-button color="primary" class="view-details-btn">
+      <button
+        mat-raised-button
+        color="primary"
+        [routerLink]="['/products', product.id]"
+      >
         View Details
       </button>
       <button

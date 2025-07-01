@@ -1,0 +1,46 @@
+@if (product) {
+<div class="product-details">
+  <div class="image-gallery">
+    <img [src]="selectedImage" [alt]="product.name" class="main-image" />
+    <div class="thumbnail-container">
+      @for (image of product.images; track image) {
+      <img
+        [src]="image"
+        [alt]="product.name"
+        class="thumbnail"
+        (click)="changeImage(image)"
+      />
+      }
+    </div>
+  </div>
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <p class="category">{{ product.category }}</p>
+    <p class="price">{{ product.price | currency : "KES " }}</p>
+    <p class="description">{{ product.description }}</p>
+    <button mat-raised-button color="primary" (click)="buyNow()">
+      Buy Now
+    </button>
+    <div class="social-share">
+      <a
+        href="https://www.facebook.com/sharer/sharer.php?u={{
+          getCurrentUrl()
+        }}"
+        target="_blank"
+      >
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a
+        href="https://www.instagram.com/?url={{ getCurrentUrl() }}"
+        target="_blank"
+      >
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </div>
+</div>
+} @if (!product) {
+<div class="not-found">
+  <h2>Product not found</h2>
+</div>
+}

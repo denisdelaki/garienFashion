@@ -8,11 +8,18 @@ import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { Product } from '../../models/product/product.model';
 import { ProductService } from '../../services/product.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
+    RouterModule,
+  ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
 })
@@ -53,7 +60,8 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     this.snackBar.open(`${product.name} added to cart!`, 'Close', {
       duration: 3000,
       horizontalPosition: 'right',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
+      panelClass: ['custom-snackbar'],
     });
   }
 
@@ -67,7 +75,8 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: 'right',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
+      panelClass: ['custom-snackbar'],
     });
   }
 
