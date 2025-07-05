@@ -255,7 +255,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       duration: 5000,
       panelClass: ['success-snackbar'],
       horizontalPosition: 'center',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
     });
 
     // Clear message after delay
@@ -270,7 +270,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       duration: 8000,
       panelClass: ['error-snackbar'],
       horizontalPosition: 'center',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
     });
 
     // Clear message after delay
