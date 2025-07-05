@@ -1,14 +1,29 @@
 <header class="main-header">
   <div class="header-container">
     <div class="logo-section">
+      <img
+        src="https://i.ibb.co/Wv9vgTy6/logo.png"
+        alt="Garien Logo"
+        class="logo-image"
+      />
       <h1 class="boutique-name">Garien Fashion Boutique</h1>
     </div>
 
-    <nav class="main-navigation">
+    <button
+      mat-icon-button
+      class="mobile-menu-icon"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle menu"
+    >
+      <mat-icon>{{ mobileMenuOpen ? "close" : "menu" }}</mat-icon>
+    </button>
+
+    <nav class="main-navigation" [class.mobile-open]="mobileMenuOpen">
       <ul class="nav-menu">
         <li class="nav-item">
           <a routerLink="/" class="nav-link">Home</a>
         </li>
+
         <li
           class="nav-item dropdown"
           (mouseenter)="showProductsMenu = true"
@@ -34,6 +49,7 @@
             </li>
           </ul>
         </li>
+
         <li
           class="nav-item dropdown"
           (mouseenter)="showTailoredMenu = true"
@@ -63,6 +79,7 @@
             </li>
           </ul>
         </li>
+
         <li class="nav-item">
           <a routerLink="/contact" class="nav-link">Contact</a>
         </li>
@@ -74,30 +91,10 @@
 
     <div class="header-actions">
       <button class="action-btn search-btn" (click)="toggleSearch()">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
+        <mat-icon>search</mat-icon>
       </button>
       <button class="action-btn login-btn" (click)="openLogin()">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
+        <mat-icon>account_circle</mat-icon>
       </button>
       <button mat-icon-button class="action-btn cart-btn" (click)="openCart()">
         <mat-icon>shopping_cart</mat-icon>
@@ -106,7 +103,6 @@
     </div>
   </div>
 
-  <!-- Search Bar (toggleable) -->
   <div class="search-container" [class.show]="showSearch">
     <input
       type="text"
@@ -124,7 +120,6 @@
     </button>
   </div>
 
-  <!-- Gender Navigation - Only show on products pages -->
   @if(showGenderNavigation){
   <div class="gender-navigation">
     <div class="gender-nav-container">

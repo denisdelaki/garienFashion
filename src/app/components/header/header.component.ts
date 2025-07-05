@@ -27,33 +27,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Output() loginClicked = new EventEmitter<void>();
   @Output() cartClicked = new EventEmitter<void>();
   @Output() genderFilterChanged = new EventEmitter<string>();
-
+  logoPath: string = 'https://ibb.co/HTvTnJzV';
   showProductsMenu = false;
   showTailoredMenu = false;
   showSearch = false;
   searchQuery = '';
   selectedGender = 'all';
   showGenderNavigation = false;
+  mobileMenuOpen = false;
 
   private routerSubscription: Subscription = new Subscription();
 
   constructor(private router: Router, private cartService: CartService) {}
 
   ngOnInit(): void {
-    // Check initial route
     this.checkCurrentRoute(this.router.url);
-
-    this.getAddedCartItems();
-
-    // Subscribe to route changes
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.checkCurrentRoute(event.urlAfterRedirects);
       });
-  }
 
-  getAddedCartItems() {
     this.cartService.cartCount$.subscribe((count) => {
       this.cartItemCount = count;
     });
@@ -61,11 +55,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSubscription.unsubscribe();
-  }
-
-  private checkCurrentRoute(url: string): void {
-    // Show gender navigation only on products routes
-    this.showGenderNavigation = url.includes('/products');
   }
 
   toggleSearch(): void {
@@ -90,6 +79,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   filterByGender(gender: string): void {
     this.selectedGender = gender;
     this.genderFilterChanged.emit(gender);
-    console.log('Filter by gender:', gender);
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  private checkCurrentRoute(url: string): void {
+    this.showGenderNavigation = url.includes('/products');
   }
 }
