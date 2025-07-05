@@ -1,1 +1,212 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>{{ isLoginMode ? "Welcome Back" : "Create Account" }}</h2>
+      <p>
+        {{
+          isLoginMode
+            ? "Sign in to your account"
+            : "Join Garien Fashion Hub today"
+        }}
+      </p>
+    </div>
+
+    <!-- Google Sign In Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="google-btn"
+      (click)="signInWithGoogle()"
+      [disabled]="isLoading"
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google"
+        class="google-icon"
+      />
+      {{ isLoginMode ? "Sign in with Google" : "Sign up with Google" }}
+    </button>
+
+    <mat-divider class="divider">
+      <span>or</span>
+    </mat-divider>
+
+    <!-- Login/Signup Form -->
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Name field (only for signup) -->
+      <mat-form-field
+        appearance="outline"
+        *ngIf="!isLoginMode"
+        class="full-width"
+      >
+        <mat-label>Full Name</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="name"
+          placeholder="Enter your full name"
+          required
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="authForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+        <mat-error *ngIf="authForm.get('name')?.hasError('minlength')">
+          Name must be at least 2 characters
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Email field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email Address</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          required
+        />
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="authForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="authForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+          required
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="showPassword"
+        >
+          <mat-icon>{{
+            showPassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error *ngIf="authForm.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="authForm.get('password')?.hasError('minlength')">
+          Password must be at least 6 characters
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Confirm Password field (only for signup) -->
+      <mat-form-field
+        appearance="outline"
+        *ngIf="!isLoginMode"
+        class="full-width"
+      >
+        <mat-label>Confirm Password</mat-label>
+        <input
+          matInput
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          formControlName="confirmPassword"
+          placeholder="Confirm your password"
+          required
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="toggleConfirmPasswordVisibility()"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="showConfirmPassword"
+        >
+          <mat-icon>{{
+            showConfirmPassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="authForm.get('confirmPassword')?.hasError('required')"
+        >
+          Please confirm your password
+        </mat-error>
+        <mat-error *ngIf="authForm.hasError('passwordMismatch')">
+          Passwords do not match
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Forgot Password (only for login) -->
+      <div class="forgot-password" *ngIf="isLoginMode">
+        <button
+          mat-button
+          color="primary"
+          type="button"
+          (click)="forgotPassword($event)"
+        >
+          Forgot your password?
+        </button>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="submit-btn full-width"
+        [disabled]="authForm.invalid || isLoading"
+      >
+        <mat-spinner
+          *ngIf="isLoading"
+          diameter="20"
+          class="loading-spinner"
+        ></mat-spinner>
+        <span [class.loading-text]="isLoading">
+          {{ isLoginMode ? "Sign In" : "Create Account" }}
+        </span>
+      </button>
+    </form>
+
+    <!-- Toggle between login and signup -->
+    <div class="toggle-mode">
+      <p>
+        {{
+          isLoginMode ? "Don't have an account?" : "Already have an account?"
+        }}
+        <button
+          mat-button
+          color="accent"
+          type="button"
+          (click)="toggleMode($event)"
+        >
+          {{ isLoginMode ? "Sign up" : "Sign in" }}
+        </button>
+      </p>
+    </div>
+
+    <!-- Error Message -->
+    <mat-card class="error-alert" *ngIf="errorMessage">
+      <mat-card-content>
+        <div class="alert-content">
+          <mat-icon color="warn">error</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Success Message -->
+    <mat-card class="success-alert" *ngIf="successMessage">
+      <mat-card-content>
+        <div class="alert-content">
+          <mat-icon color="primary">check_circle</mat-icon>
+          <span>{{ successMessage }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -93,8 +93,19 @@
       <button class="action-btn search-btn" (click)="toggleSearch()">
         <mat-icon>search</mat-icon>
       </button>
-      <button class="action-btn login-btn" (click)="openLogin()">
+      <button
+        class="action-btn login-btn"
+        (click)="openLogin()"
+        *ngIf="!authService.isLoggedIn"
+      >
         <mat-icon>account_circle</mat-icon>
+      </button>
+      <button
+        class="action-btn login-btn"
+        (click)="authService.signOut()"
+        *ngIf="authService.isLoggedIn"
+      >
+        Logout
       </button>
       <button mat-icon-button class="action-btn cart-btn" (click)="openCart()">
         <mat-icon>shopping_cart</mat-icon>

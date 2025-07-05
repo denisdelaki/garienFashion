@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MatIconModule } from '@angular/material/icon';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -38,7 +39,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private routerSubscription: Subscription = new Subscription();
 
-  constructor(private router: Router, private cartService: CartService) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.checkCurrentRoute(this.router.url);
@@ -71,7 +76,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   openLogin(): void {
     this.loginClicked.emit();
   }
-
   openCart(): void {
     this.cartClicked.emit();
   }
