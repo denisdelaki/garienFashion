@@ -1,1 +1,264 @@
-<p>contact works!</p>
+<div class="contact-container">
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <div class="hero-content">
+      <h1>Get in Touch</h1>
+      <p>
+        We'd love to hear from you. Send us a message and we'll respond as soon
+        as possible.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="contact-content">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Contact Form -->
+        <div class="contact-form-section">
+          <h2>Send us a Message</h2>
+          <form
+            [formGroup]="contactForm"
+            (ngSubmit)="onSubmit()"
+            class="contact-form"
+          >
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Full Name</mat-label>
+                <input
+                  matInput
+                  formControlName="name"
+                  placeholder="Enter your full name"
+                />
+                <mat-error
+                  *ngIf="contactForm.get('name')?.hasError('required')"
+                >
+                  Name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email Address</mat-label>
+                <input
+                  matInput
+                  type="email"
+                  formControlName="email"
+                  placeholder="Enter your email"
+                />
+                <mat-error
+                  *ngIf="contactForm.get('email')?.hasError('required')"
+                >
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="contactForm.get('email')?.hasError('email')">
+                  Please enter a valid email
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Phone Number</mat-label>
+                <input
+                  matInput
+                  formControlName="phone"
+                  placeholder="Enter your phone number"
+                />
+                <mat-error
+                  *ngIf="contactForm.get('phone')?.hasError('required')"
+                >
+                  Phone number is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Subject</mat-label>
+                <mat-select formControlName="subject">
+                  <mat-option value="general">General Inquiry</mat-option>
+                  <mat-option value="tailoring">Custom Tailoring</mat-option>
+                  <mat-option value="orders">Order Support</mat-option>
+                  <mat-option value="returns">Returns & Exchanges</mat-option>
+                  <mat-option value="wholesale">Wholesale Inquiry</mat-option>
+                  <mat-option value="other">Other</mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="contactForm.get('subject')?.hasError('required')"
+                >
+                  Please select a subject
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Message</mat-label>
+                <textarea
+                  matInput
+                  formControlName="message"
+                  rows="5"
+                  placeholder="Tell us how we can help you..."
+                ></textarea>
+                <mat-error
+                  *ngIf="contactForm.get('message')?.hasError('required')"
+                >
+                  Message is required
+                </mat-error>
+                <mat-error
+                  *ngIf="contactForm.get('message')?.hasError('minlength')"
+                >
+                  Message must be at least 10 characters long
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="contactForm.invalid || isSubmitting"
+                class="submit-btn"
+              >
+                <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+                <span *ngIf="!isSubmitting">Send Message</span>
+                <span *ngIf="isSubmitting">Sending...</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info-section">
+          <h2>Contact Information</h2>
+
+          <div class="contact-info-grid">
+            <!-- Store Location -->
+            <div class="info-card">
+              <div class="info-icon">
+                <mat-icon>location_on</mat-icon>
+              </div>
+              <div class="info-content">
+                <h3>Visit Our Boutique</h3>
+                <p>
+                  123 Fashion Street<br />
+                  Nairobi, Kenya<br />
+                  00100
+                </p>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="info-card">
+              <div class="info-icon">
+                <mat-icon>phone</mat-icon>
+              </div>
+              <div class="info-content">
+                <h3>Call Us</h3>
+                <p>
+                  <a href="tel:+254700000000">+254 700 000 000</a><br />
+                  <a href="tel:+254720000000">+254 720 000 000</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="info-card">
+              <div class="info-icon">
+                <mat-icon>email</mat-icon>
+              </div>
+              <div class="info-content">
+                <h3>Email Us</h3>
+                <p>
+                  <a href="mailto:info&#64;garienfashion.com"
+                    >info&#64;garienfashion.com</a
+                  ><br />
+                  <a href="mailto:orders&#64;garienfashion.com"
+                    >orders&#64;garienfashion.com</a
+                  >
+                </p>
+              </div>
+            </div>
+
+            <!-- Business Hours -->
+            <div class="info-card">
+              <div class="info-icon">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <div class="info-content">
+                <h3>Business Hours</h3>
+                <p>
+                  Monday - Friday: 9:00 AM - 7:00 PM<br />
+                  Saturday: 9:00 AM - 6:00 PM<br />
+                  Sunday: 10:00 AM - 4:00 PM
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Media -->
+          <div class="social-section">
+            <h3>Follow Us</h3>
+            <div class="social-links">
+              <a href="#" class="social-link" aria-label="Facebook">
+                <mat-icon>facebook</mat-icon>
+              </a>
+              <a href="#" class="social-link" aria-label="Instagram">
+                <mat-icon svgIcon="instagram"></mat-icon>
+              </a>
+              <a href="#" class="social-link" aria-label="Twitter">
+                <mat-icon svgIcon="twitter"></mat-icon>
+              </a>
+              <a href="#" class="social-link" aria-label="WhatsApp">
+                <mat-icon>phone</mat-icon>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Section -->
+      <div class="services-section">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+          <div class="service-card">
+            <mat-icon>content_cut</mat-icon>
+            <h3>Custom Tailoring</h3>
+            <p>Professional tailoring services for perfect fit and style</p>
+          </div>
+          <div class="service-card">
+            <mat-icon>palette</mat-icon>
+            <h3>Fashion Design</h3>
+            <p>Unique designs crafted to match your personal style</p>
+          </div>
+          <div class="service-card">
+            <mat-icon>shopping_bag</mat-icon>
+            <h3>Retail Fashion</h3>
+            <p>High-quality imported clothing and accessories</p>
+          </div>
+          <div class="service-card">
+            <mat-icon>local_shipping</mat-icon>
+            <h3>Delivery Service</h3>
+            <p>Fast and reliable delivery across Kenya</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let faq of faqs">
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ faq.question }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>{{ faq.answer }}</p>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
+</div>
