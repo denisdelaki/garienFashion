@@ -76,6 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   openLogin(): void {
     this.loginClicked.emit();
   }
+
   openCart(): void {
     this.cartClicked.emit();
   }
@@ -87,6 +88,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+    this.showProductsMenu = false;
+    this.showTailoredMenu = false;
   }
 
   private checkCurrentRoute(url: string): void {

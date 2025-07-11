@@ -21,7 +21,9 @@
     <nav class="main-navigation" [class.mobile-open]="mobileMenuOpen">
       <ul class="nav-menu">
         <li class="nav-item">
-          <a routerLink="/" class="nav-link">Home</a>
+          <a routerLink="/" class="nav-link" (click)="closeMobileMenu()"
+            >Home</a
+          >
         </li>
 
         <li
@@ -29,23 +31,41 @@
           (mouseenter)="showProductsMenu = true"
           (mouseleave)="showProductsMenu = false"
         >
-          <a routerLink="/products" class="nav-link">Products</a>
+          <a routerLink="/products" class="nav-link" (click)="closeMobileMenu()"
+            >Products</a
+          >
           <ul class="dropdown-menu" [class.show]="showProductsMenu">
             <li>
-              <a routerLink="/products/accessories" class="dropdown-link"
+              <a
+                routerLink="/products/accessories"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Accessories</a
               >
             </li>
             <li>
-              <a routerLink="/products/clothing" class="dropdown-link"
+              <a
+                routerLink="/products/clothing"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Clothing</a
               >
             </li>
             <li>
-              <a routerLink="/products/shoes" class="dropdown-link">Shoes</a>
+              <a
+                routerLink="/products/shoes"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
+                >Shoes</a
+              >
             </li>
             <li>
-              <a routerLink="/products/bags" class="dropdown-link">Bags</a>
+              <a
+                routerLink="/products/bags"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
+                >Bags</a
+              >
             </li>
           </ul>
         </li>
@@ -55,25 +75,42 @@
           (mouseenter)="showTailoredMenu = true"
           (mouseleave)="showTailoredMenu = false"
         >
-          <a routerLink="/tailoring" class="nav-link">Tailored</a>
+          <a
+            routerLink="/tailoring"
+            class="nav-link"
+            (click)="closeMobileMenu()"
+            >Tailored</a
+          >
           <ul class="dropdown-menu" [class.show]="showTailoredMenu">
             <li>
-              <a routerLink="/tailoring/custom-suits" class="dropdown-link"
+              <a
+                routerLink="/tailoring/custom-suits"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Custom Suits</a
               >
             </li>
             <li>
-              <a routerLink="/tailoring/alterations" class="dropdown-link"
+              <a
+                routerLink="/tailoring/alterations"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Alterations</a
               >
             </li>
             <li>
-              <a routerLink="/tailoring/bespoke" class="dropdown-link"
+              <a
+                routerLink="/tailoring/bespoke"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Bespoke</a
               >
             </li>
             <li>
-              <a routerLink="/tailoring/consultation" class="dropdown-link"
+              <a
+                routerLink="/tailoring/consultation"
+                class="dropdown-link"
+                (click)="closeMobileMenu()"
                 >Consultation</a
               >
             </li>
@@ -81,10 +118,14 @@
         </li>
 
         <li class="nav-item">
-          <a routerLink="/contact" class="nav-link">Contact</a>
+          <a routerLink="/contact" class="nav-link" (click)="closeMobileMenu()"
+            >Contact</a
+          >
         </li>
         <li class="nav-item">
-          <a routerLink="/blog" class="nav-link">Blog</a>
+          <a routerLink="/blog" class="nav-link" (click)="closeMobileMenu()"
+            >Blog</a
+          >
         </li>
       </ul>
     </nav>

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
+  private genderSubject = new BehaviorSubject<string>('all');
+  public gender$: Observable<string> = this.genderSubject.asObservable();
   constructor() {}
 
   private products: Product[] = [
@@ -250,6 +253,13 @@ export class ProductService {
   getProducts(): Product[] {
     return this.products;
   }
+  setGender(gender: string): void {
+    this.genderSubject.next(gender);
+  }
+
+  getCurrentGender(): string {
+    return this.genderSubject.value;
+  }
 
   // Get product by ID
   getProductById(id: number): Product | undefined {
@@ -258,7 +268,12 @@ export class ProductService {
 
   // Get products by gender
   getProductsByGender(gender: 'men' | 'Women' | 'kids' | 'unisex'): Product[] {
-    return this.products.filter((product) => product.gender === gender);
+    return this.products.filter((product) => {
+      if (!product.gender) {
+        return gender === 'unisex';
+      }
+      return product.gender.toLowerCase() === gender.toLowerCase();
+    });
   }
 
   // Get only tailored products

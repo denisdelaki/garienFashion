@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
-import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
-import { RouterModule } from '@angular/router';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-products',
@@ -26,38 +26,62 @@ import { RouterModule } from '@angular/router';
 export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   products: Product[] = [];
   allProducts: Product[] = [];
-  @Input() category: string = '';
-  @Input() gender: string = '';
+  category: string = '';
   @Input() limit?: number;
   @Input() isTailored?: boolean;
   @Input() isFeatured?: boolean;
+  @Input() gender: string = 'all';
 
   favoriteProducts: Set<number> = new Set();
+  private routeSubscription: Subscription = new Subscription();
   private favoritesSubscription: Subscription = new Subscription();
+  private genderFilterSubscription: Subscription = new Subscription();
 
   constructor(
     private cartService: CartService,
     private favoritesService: FavoriteService,
     private snackBar: MatSnackBar,
-    private productService: ProductService
+    private productService: ProductService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.allProducts = this.productService.getProducts();
-    this.filterProducts();
-    // Subscribe to favorites to track which products are favorited
+
+    // Subscribe to route parameters to get category
+    this.routeSubscription = this.route.paramMap.subscribe((params) => {
+      this.category = params.get('category') || '';
+      this.filterProducts();
+    });
+
+    // Subscribe to favorites
     this.favoritesSubscription = this.favoritesService.favorites$.subscribe(
       (favorites) => {
         this.favoriteProducts = new Set(favorites.map((fav) => fav.id));
       }
     );
+    // Subscribe to gender changes
+    this.genderFilterSubscription = this.productService.gender$.subscribe(
+      (gender) => {
+        this.gender = gender;
+        this.filterProducts();
+      }
+    );
+  }
+
+  ngOnChanges(): void {
+    if (this.allProducts.length > 0) {
+      this.filterProducts();
+    }
   }
 
   ngOnDestroy(): void {
+    this.routeSubscription.unsubscribe();
     this.favoritesSubscription.unsubscribe();
+    this.genderFilterSubscription.unsubscribe();
   }
 
-  addToCart(product: any): void {
+  addToCart(product: Product): void {
     this.cartService.addToCart(product);
     this.snackBar.open(`${product.name} added to cart!`, 'Close', {
       duration: 3000,
@@ -67,13 +91,11 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  toggleFavorite(product: any): void {
+  toggleFavorite(product: Product): void {
     const isNowFavorite = this.favoritesService.toggleFavorite(product);
-
     const message = isNowFavorite
       ? `${product.name} added to favorites!`
       : `${product.name} removed from favorites!`;
-
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: 'right',
@@ -89,27 +111,39 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   getFavoriteIcon(productId: number): string {
     return this.isFavorite(productId) ? 'favorite' : 'favorite_border';
   }
+
   private filterProducts(): void {
     let filteredProducts = this.allProducts;
 
     // Filter by category if specified
     if (this.category) {
-      filteredProducts = this.allProducts.filter(
+      filteredProducts = filteredProducts.filter(
         (product) =>
-          product.category.toLowerCase() === this.category!.toLowerCase()
+          product.category.toLowerCase() === this.category.toLowerCase()
       );
+    }
+
+    if (this.gender && this.gender !== 'all') {
+      filteredProducts = filteredProducts.filter((product) => {
+        if (!product.gender) {
+          return this.gender === 'unisex';
+        }
+        return product.gender.toLowerCase() === this.gender.toLowerCase();
+      });
     }
 
     // Limit number of products if specified
     if (this.limit && this.limit > 0) {
       filteredProducts = filteredProducts.slice(0, this.limit);
     }
+
     // Filter tailored products if isTailored is true
     if (this.isTailored) {
       filteredProducts = filteredProducts.filter(
         (product) => product.isTailored === true
       );
     }
+
     // Filter featured products if isFeatured is true
     if (this.isFeatured) {
       filteredProducts = filteredProducts.filter(
@@ -118,12 +152,5 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.products = filteredProducts;
-  }
-
-  // Method to handle input changes
-  ngOnChanges(): void {
-    if (this.allProducts.length > 0) {
-      this.filterProducts();
-    }
   }
 }

@@ -8,6 +8,7 @@ import { TailoringComponent } from './components/tailoring/tailoring.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductsComponent },
+  { path: 'products/:category', component: ProductsComponent },
   {
     path: 'products/:id',
     loadComponent: () =>
@@ -17,6 +18,7 @@ export const routes: Routes = [
     data: { prerender: false },
   },
   { path: 'tailoring', component: TailoringComponent },
+  { path: 'tailoring/:category', component: TailoringComponent },
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
   {
