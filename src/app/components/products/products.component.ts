@@ -89,6 +89,7 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     this.routeSubscription.unsubscribe();
     this.favoritesSubscription.unsubscribe();
     this.genderFilterSubscription.unsubscribe();
+    this.searchFilterSubscription.unsubscribe();
   }
 
   addToCart(product: Product): void {

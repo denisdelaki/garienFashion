@@ -95,10 +95,8 @@ export class AuthService {
         });
       }
 
-      console.log('User created successfully:', userCredential.user);
       return userCredential;
     } catch (error: any) {
-      console.error('Sign up error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -114,10 +112,8 @@ export class AuthService {
         email,
         password
       );
-      console.log('User signed in successfully:', userCredential.user);
       return userCredential;
     } catch (error: any) {
-      console.error('Sign in error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -129,10 +125,8 @@ export class AuthService {
         this.auth,
         this.googleProvider
       );
-      console.log('Google sign in successful:', userCredential.user);
       return userCredential;
     } catch (error: any) {
-      console.error('Google sign in error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -144,10 +138,8 @@ export class AuthService {
         this.auth,
         this.facebookProvider
       );
-      console.log('Facebook sign in successful:', userCredential.user);
       return userCredential;
     } catch (error: any) {
-      console.error('Facebook sign in error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -159,10 +151,8 @@ export class AuthService {
         this.auth,
         this.twitterProvider
       );
-      console.log('Twitter sign in successful:', userCredential.user);
       return userCredential;
     } catch (error: any) {
-      console.error('Twitter sign in error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -171,9 +161,7 @@ export class AuthService {
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.auth, email);
-      console.log('Password reset email sent to:', email);
     } catch (error: any) {
-      console.error('Password reset error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -189,12 +177,10 @@ export class AuthService {
           displayName: displayName || this.auth.currentUser.displayName,
           photoURL: photoURL || this.auth.currentUser.photoURL,
         });
-        console.log('User profile updated successfully');
       } else {
         throw new Error('No user is currently signed in');
       }
     } catch (error: any) {
-      console.error('Profile update error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -203,10 +189,8 @@ export class AuthService {
   async signOut(): Promise<void> {
     try {
       await signOut(this.auth);
-      console.log('User signed out successfully');
       this.router.navigate(['/login']);
     } catch (error: any) {
-      console.error('Sign out error:', error);
       throw this.handleFirebaseError(error);
     }
   }
@@ -257,12 +241,10 @@ export class AuthService {
       if (this.auth.currentUser) {
         const { sendEmailVerification } = await import('@angular/fire/auth');
         await sendEmailVerification(this.auth.currentUser);
-        console.log('Email verification sent');
       } else {
         throw new Error('No user is currently signed in');
       }
     } catch (error: any) {
-      console.error('Email verification error:', error);
       throw this.handleFirebaseError(error);
     }
   }
