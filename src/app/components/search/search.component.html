@@ -1,1 +1,31 @@
-<p>search works!</p>
+<div class="search-input-container">
+  <mat-form-field appearance="outline" class="search-form-field">
+    <mat-label>Search products...</mat-label>
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+      class="search-input"
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="onSearch()"
+      aria-label="Search"
+      [disabled]="!searchQuery.trim()"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="onClear()"
+      aria-label="Clear search"
+      [disabled]="!searchQuery.trim()"
+      *ngIf="searchQuery.trim()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>

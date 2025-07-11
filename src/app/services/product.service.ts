@@ -1,13 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private genderSubject = new BehaviorSubject<string>('all');
+  private searchQuerySubject = new BehaviorSubject<string>('');
   public gender$: Observable<string> = this.genderSubject.asObservable();
+  public searchQuery$: Observable<string> =
+    this.searchQuerySubject.asObservable();
+  public filteredProducts$: Observable<Product[]> = combineLatest([
+    this.gender$,
+    this.searchQuery$,
+  ]).pipe(
+    map(([gender, searchQuery]) =>
+      this.getFilteredProducts(
+        gender as 'men' | 'Women' | 'kids' | 'unisex',
+        searchQuery
+      )
+    )
+  );
+
   constructor() {}
 
   private products: Product[] = [
@@ -279,5 +294,55 @@ export class ProductService {
   // Get only tailored products
   getTailoredProducts(): Product[] {
     return this.products.filter((product) => product.isTailored === true);
+  }
+
+  private getFilteredProducts(
+    gender: 'men' | 'Women' | 'kids' | 'unisex',
+    searchQuery: string
+  ): Product[] {
+    let filteredProducts = this.getProductsByGender(gender);
+
+    if (searchQuery && searchQuery.trim()) {
+      const lowerQuery = searchQuery.toLowerCase();
+      filteredProducts = filteredProducts.filter(
+        (product) =>
+          product.name.toLowerCase().includes(lowerQuery) ||
+          product.description.toLowerCase().includes(lowerQuery) ||
+          product.category.toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    return filteredProducts;
+  }
+
+  getCurrentSearchQuery(): string {
+    return this.searchQuerySubject.value;
+  }
+
+  searchProducts(query: string): Product[] {
+    if (!query.trim()) {
+      return this.getProductsByGender(
+        this.getCurrentGender() as 'men' | 'Women' | 'kids' | 'unisex'
+      );
+    }
+    const lowerQuery = query.toLowerCase();
+    return this.getProductsByGender(
+      this.getCurrentGender() as 'men' | 'Women' | 'kids' | 'unisex'
+    ).filter(
+      (product) =>
+        product.name.toLowerCase().includes(lowerQuery) ||
+        product.description.toLowerCase().includes(lowerQuery) ||
+        product.category.toLowerCase().includes(lowerQuery)
+    );
+  }
+
+  // Set search query
+  setSearchQuery(query: string): void {
+    this.searchQuerySubject.next(query);
+  }
+
+  // Clear search query
+  clearSearch(): void {
+    this.searchQuerySubject.next('');
   }
 }

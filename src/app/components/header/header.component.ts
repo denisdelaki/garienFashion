@@ -14,11 +14,19 @@ import { filter } from 'rxjs/operators';
 import { MatIconModule } from '@angular/material/icon';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
+import { SearchComponent } from '../search/search.component';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatIconModule,
+    SearchComponent,
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -42,7 +50,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private cartService: CartService,
-    public authService: AuthService
+    public authService: AuthService,
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
@@ -64,13 +73,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleSearch(): void {
     this.showSearch = !this.showSearch;
+    if (!this.showSearch) {
+      this.onSearchClosed();
+    }
   }
 
-  performSearch(): void {
-    if (this.searchQuery.trim()) {
-      this.searchPerformed.emit(this.searchQuery);
-      this.showSearch = false;
-    }
+  onSearchPerformed(searchQuery: string): void {
+    this.productService.setSearchQuery(searchQuery);
+    this.searchPerformed.emit(searchQuery);
+    this.showSearch = true;
+  }
+
+  onSearchClosed(): void {
+    this.productService.clearSearch();
+    this.searchPerformed.emit('');
+    this.showSearch = false;
   }
 
   openLogin(): void {

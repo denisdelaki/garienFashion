@@ -26,16 +26,18 @@ import { Product } from '../../models/product.model';
 export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   products: Product[] = [];
   allProducts: Product[] = [];
-  category: string = '';
+  @Input() category: string = '';
   @Input() limit?: number;
   @Input() isTailored?: boolean;
   @Input() isFeatured?: boolean;
   @Input() gender: string = 'all';
+  searchQuery: string = '';
 
   favoriteProducts: Set<number> = new Set();
   private routeSubscription: Subscription = new Subscription();
   private favoritesSubscription: Subscription = new Subscription();
   private genderFilterSubscription: Subscription = new Subscription();
+  private searchFilterSubscription: Subscription = new Subscription();
 
   constructor(
     private cartService: CartService,
@@ -64,6 +66,14 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     this.genderFilterSubscription = this.productService.gender$.subscribe(
       (gender) => {
         this.gender = gender;
+        this.filterProducts();
+      }
+    );
+
+    //subscribe to search changes
+    this.searchFilterSubscription = this.productService.searchQuery$.subscribe(
+      (query) => {
+        this.searchQuery = query;
         this.filterProducts();
       }
     );
@@ -148,6 +158,17 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     if (this.isFeatured) {
       filteredProducts = filteredProducts.filter(
         (product) => product.isFeatured === true
+      );
+    }
+
+    //filter searched products
+    if (this.searchQuery && this.searchQuery.trim()) {
+      const lowerQuery = this.searchQuery.toLowerCase().trim();
+      filteredProducts = filteredProducts.filter(
+        (product) =>
+          product.name.toLowerCase().includes(lowerQuery) ||
+          product.description.toLowerCase().includes(lowerQuery) ||
+          product.category.toLowerCase().includes(lowerQuery)
       );
     }
 

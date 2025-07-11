@@ -156,20 +156,7 @@
   </div>
 
   <div class="search-container" [class.show]="showSearch">
-    <input
-      type="text"
-      placeholder="Search products..."
-      class="search-input"
-      [(ngModel)]="searchQuery"
-    />
-    <button
-      mat-raised-button
-      color="primary"
-      class="search-submit"
-      (click)="performSearch()"
-    >
-      Search
-    </button>
+     <app-search (search)="onSearchPerformed($event)" (searchClosed)="onSearchClosed()"></app-search>
   </div>
 
   @if(showGenderNavigation){
