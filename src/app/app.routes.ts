@@ -4,6 +4,8 @@ import { ContactComponent } from './components/contact/contact.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProductsComponent } from './components/products/products.component';
 import { TailoringComponent } from './components/tailoring/tailoring.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminGuard } from './guard/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -44,6 +46,11 @@ export const routes: Routes = [
     path: 'cart',
     loadComponent: () =>
       import('./components/cart/cart.component').then((m) => m.CartComponent),
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [AdminGuard],
   },
   { path: '**', redirectTo: '' },
 ];

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../models/product.model';
+import { Product, ProductFormData } from '../models/product.model';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 export class ProductService {
   private genderSubject = new BehaviorSubject<string>('all');
   private searchQuerySubject = new BehaviorSubject<string>('');
+  private productsSubject = new BehaviorSubject<Product[]>([]);
   public gender$: Observable<string> = this.genderSubject.asObservable();
   public searchQuery$: Observable<string> =
     this.searchQuerySubject.asObservable();
@@ -24,6 +25,10 @@ export class ProductService {
   );
 
   constructor() {}
+  private saveProducts(products: Product[]): void {
+    localStorage.setItem('products', JSON.stringify(products));
+    this.productsSubject.next(products);
+  }
 
   private products: Product[] = [
     // Regular Products
@@ -294,6 +299,63 @@ export class ProductService {
   // Get only tailored products
   getTailoredProducts(): Product[] {
     return this.products.filter((product) => product.isTailored === true);
+  }
+
+  addProduct(productData: ProductFormData): Product {
+    const newProduct: Product = {
+      ...productData,
+      id: Date.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      images: productData.images || [],
+      quantity: productData.quantity.toString(),
+    };
+
+    const currentProducts = this.productsSubject.value;
+    const updatedProducts = [...currentProducts, newProduct];
+    this.saveProducts(updatedProducts);
+
+    return newProduct;
+  }
+
+  updateProduct(
+    id: number,
+    productData: Partial<ProductFormData>
+  ): Product | null {
+    const currentProducts = this.productsSubject.value;
+    const productIndex = currentProducts.findIndex(
+      (product) => product.id === id
+    );
+
+    if (productIndex === -1) {
+      return null;
+    }
+
+    const updatedProduct: Product = {
+      ...currentProducts[productIndex],
+      ...productData,
+      quantity: productData.quantity?.toString(),
+      updatedAt: new Date(),
+    };
+
+    currentProducts[productIndex] = updatedProduct;
+    this.saveProducts(currentProducts);
+
+    return updatedProduct;
+  }
+
+  deleteProduct(id: number): boolean {
+    const currentProducts = this.productsSubject.value;
+    const filteredProducts = currentProducts.filter(
+      (product) => product.id !== id
+    );
+
+    if (filteredProducts.length === currentProducts.length) {
+      return false; // Product not found
+    }
+
+    this.saveProducts(filteredProducts);
+    return true;
   }
 
   private getFilteredProducts(

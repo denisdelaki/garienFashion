@@ -20,6 +20,11 @@
 
     <nav class="main-navigation" [class.mobile-open]="mobileMenuOpen">
       <ul class="nav-menu">
+        <li *ngIf="authService.isSuperUser" class="nav-item">
+          <a routerLink="/admin" class="nav-link">
+            <i class="fas fa-cog"></i> Admin Panel
+          </a>
+        </li>
         <li class="nav-item">
           <a routerLink="/" class="nav-link" (click)="closeMobileMenu()"
             >Home</a
@@ -156,7 +161,10 @@
   </div>
 
   <div class="search-container" [class.show]="showSearch">
-     <app-search (search)="onSearchPerformed($event)" (searchClosed)="onSearchClosed()"></app-search>
+    <app-search
+      (search)="onSearchPerformed($event)"
+      (searchClosed)="onSearchClosed()"
+    ></app-search>
   </div>
 
   @if(showGenderNavigation){

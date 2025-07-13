@@ -25,6 +25,7 @@ export interface AuthUser {
   displayName: string | null;
   photoURL: string | null;
   emailVerified: boolean;
+  isSuperUser?: boolean;
 }
 
 @Injectable({
@@ -35,6 +36,11 @@ export class AuthService {
   private googleProvider = new GoogleAuthProvider();
   private facebookProvider = new FacebookAuthProvider();
   private twitterProvider = new TwitterAuthProvider();
+
+  private readonly SUPER_USER_EMAILS = [
+    'admin@garienfashion.com',
+    'denisdelaki@gmail.com',
+  ];
 
   // BehaviorSubject to track authentication state
   private authStateSubject = new BehaviorSubject<AuthUser | null>(null);
@@ -67,6 +73,7 @@ export class AuthService {
           displayName: user.displayName,
           photoURL: user.photoURL,
           emailVerified: user.emailVerified,
+          isSuperUser: this.checkIfSuperUser(user.email),
         };
         this.authStateSubject.next(authUser);
       } else {
@@ -99,6 +106,17 @@ export class AuthService {
     } catch (error: any) {
       throw this.handleFirebaseError(error);
     }
+  }
+
+  private checkIfSuperUser(email: string | null): boolean {
+    if (!email) return false;
+    return this.SUPER_USER_EMAILS.includes(email.toLowerCase());
+  }
+
+  // Check if current user is a super user
+  get isSuperUser(): boolean {
+    const currentUser = this.authStateSubject.value;
+    return currentUser?.isSuperUser || false;
   }
 
   // Sign in with email and password

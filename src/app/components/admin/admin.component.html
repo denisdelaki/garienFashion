@@ -1,0 +1,363 @@
+<div class="admin-products-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <h1 class="admin-title">Product Management</h1>
+    <button
+      class="btn btn-primary"
+      (click)="showAddForm()"
+      *ngIf="!isFormVisible"
+    >
+      <i class="fas fa-plus"></i> Add New Product
+    </button>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="search-filter-section" *ngIf="!isFormVisible">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search products..."
+        [(ngModel)]="searchTerm"
+        class="search-input"
+      />
+      <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <div class="filter-section">
+      <select [(ngModel)]="selectedCategory" class="category-filter">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Product Form -->
+  <div class="product-form-section" *ngIf="isFormVisible">
+    <div class="form-header">
+      <h2>{{ editingProduct ? "Edit Product" : "Add New Product" }}</h2>
+      <button class="btn btn-secondary" (click)="hideForm()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+    </div>
+
+    <form
+      [formGroup]="productForm"
+      (ngSubmit)="onSubmit()"
+      class="product-form"
+    >
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Product Name *</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('name')"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+              {{ getFieldError("name") }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select
+              id="category"
+              formControlName="category"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('category')"
+            >
+              <option value="">Select Category</option>
+              <option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+              {{ getFieldError("category") }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('description')"
+          >
+          </textarea>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
+            {{ getFieldError("description") }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price *</label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              step="0.01"
+              min="0"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('price')"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('price')">
+              {{ getFieldError("price") }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="quantity">Quantity *</label>
+            <input
+              type="number"
+              id="quantity"
+              formControlName="quantity"
+              min="0"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('quantity')"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('quantity')">
+              {{ getFieldError("quantity") }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="inStock"
+              class="checkbox-input"
+            />
+            <span class="checkbox-text">In Stock</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Images Section -->
+      <div class="form-section">
+        <h3>Images</h3>
+
+        <div class="form-group">
+          <label for="imageUrl">Main Image URL *</label>
+          <input
+            type="url"
+            id="imageUrl"
+            formControlName="imageUrl"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('imageUrl')"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('imageUrl')">
+            {{ getFieldError("imageUrl") }}
+          </div>
+        </div>
+
+        <div class="additional-images">
+          <label>Additional Images</label>
+          <div formArrayName="images">
+            <div
+              *ngFor="let image of imagesArray.controls; let i = index"
+              class="image-input-group"
+            >
+              <input
+                type="url"
+                [formControlName]="i"
+                class="form-control"
+                placeholder="Image URL"
+              />
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removeImageField(i)"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addImageField()"
+          >
+            <i class="fas fa-plus"></i> Add Image
+          </button>
+        </div>
+      </div>
+
+      <!-- Sizes Section -->
+      <div class="form-section">
+        <h3>Available Sizes</h3>
+        <div class="checkbox-group">
+          <label *ngFor="let size of sizes" class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="isSizeSelected(size)"
+              (change)="onSizeChange(size, $event)"
+              class="checkbox-input"
+            />
+            <span class="checkbox-text">{{ size }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Colors Section -->
+      <div class="form-section">
+        <h3>Available Colors</h3>
+        <div class="checkbox-group">
+          <label *ngFor="let color of colors" class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="isColorSelected(color)"
+              (change)="onColorChange(color, $event)"
+              class="checkbox-input"
+            />
+            <span class="checkbox-text">{{ color }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="productForm.invalid"
+        >
+          <i class="fas fa-save"></i>
+          {{ editingProduct ? "Update Product" : "Add Product" }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Products List -->
+  <div class="products-list-section" *ngIf="!isFormVisible">
+    <div class="products-header">
+      <h2>Products ({{ filteredProducts.length }})</h2>
+    </div>
+
+    <div class="products-grid" *ngIf="filteredProducts.length > 0">
+      <div *ngFor="let product of filteredProducts" class="product-card">
+        <div class="product-image">
+          <img [src]="product.images" [alt]="product.name" />
+          <div
+            class="product-status"
+            [class.in-stock]="product.inStock"
+            [class.out-of-stock]="!product.inStock"
+          >
+            {{ product.inStock ? "In Stock" : "Out of Stock" }}
+          </div>
+        </div>
+
+        <div class="product-info">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-category">{{ product.category }}</p>
+          <p class="product-description">
+            {{ product.description | slice : 0 : 100 }}...
+          </p>
+
+          <div class="product-details">
+            <div class="product-price">{{ formatPrice(product.price) }}</div>
+            <div class="product-quantity">Qty: {{ product.quantity }}</div>
+          </div>
+
+          <div
+            class="product-attributes"
+            *ngIf="product.sizes || product.colors"
+          >
+            <div
+              class="sizes"
+              *ngIf="product.sizes && product.sizes.length > 0"
+            >
+              <strong>Sizes:</strong>
+              <span
+                *ngFor="let size of product.sizes; let last = last"
+                class="attribute-tag"
+              >
+                {{ size }}<span *ngIf="!last">, </span>
+              </span>
+            </div>
+            <div
+              class="colors"
+              *ngIf="product.colors && product.colors.length > 0"
+            >
+              <strong>Colors:</strong>
+              <span
+                *ngFor="let color of product.colors; let last = last"
+                class="attribute-tag"
+              >
+                {{ color }}<span *ngIf="!last">, </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="product-meta">
+            <small class="text-muted">
+              Created:
+              {{ product.createdAt ? formatDate(product.createdAt) : "" }}
+            </small>
+            <small
+              class="text-muted"
+              *ngIf="
+                product.updatedAt &&
+                product.createdAt &&
+                product.updatedAt !== product.createdAt
+              "
+            >
+              Updated: {{ formatDate(product.updatedAt) }}
+            </small>
+          </div>
+        </div>
+
+        <div class="product-actions">
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="editProduct(product)"
+          >
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button
+            class="btn btn-outline-danger btn-sm"
+            (click)="deleteProduct(product)"
+          >
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-products" *ngIf="filteredProducts.length === 0">
+      <div class="no-products-content">
+        <i class="fas fa-box-open"></i>
+        <h3>No products found</h3>
+        <p *ngIf="searchTerm || selectedCategory">
+          Try adjusting your search or filter criteria.
+        </p>
+        <p *ngIf="!searchTerm && !selectedCategory">
+          Start by adding your first product.
+        </p>
+        <button
+          class="btn btn-primary"
+          (click)="showAddForm()"
+          *ngIf="!searchTerm && !selectedCategory"
+        >
+          <i class="fas fa-plus"></i> Add First Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
