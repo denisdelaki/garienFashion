@@ -21,7 +21,7 @@
     <nav class="main-navigation" [class.mobile-open]="mobileMenuOpen">
       <ul class="nav-menu">
         <li *ngIf="authService.isSuperUser" class="nav-item">
-          <a routerLink="/admin" class="nav-link">
+          <a routerLink="/admin" class="nav-link" (click)="closeMobileMenu()">
             <i class="fas fa-cog"></i> Admin Panel
           </a>
         </li>
