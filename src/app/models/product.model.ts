@@ -20,6 +20,7 @@ export interface Product {
     deliveryTime: string;
   };
   category: string;
+  imageUrl?: string;
   images: string[];
   updatedAt?: Date;
   createdAt?: Date;

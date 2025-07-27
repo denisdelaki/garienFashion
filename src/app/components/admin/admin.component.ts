@@ -13,10 +13,11 @@ import { AuthService } from '../../services/auth.service';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
@@ -101,7 +102,12 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private loadProducts(): void {
-    this.products = this.productService.getProducts();
+    this.productService
+      .getProducts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((products: Product[]) => {
+        this.products = products;
+      });
   }
 
   // Form Array Getters
@@ -248,7 +254,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         sizes: this.sizesArray.value,
         colors: this.colorsArray.value,
       };
-
+      console.log('form', formData);
       if (this.editingProduct) {
         this.updateProduct(formData);
       } else {

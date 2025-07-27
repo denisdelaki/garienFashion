@@ -31,8 +31,12 @@ export class ProductDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.product = this.productService.getProductById(id);
-    this.selectedImage = this.product?.images[0]; // Set default image
+    this.productService
+      .getProductById(id)
+      .subscribe((product: Product | undefined) => {
+        this.product = product;
+        this.selectedImage = this.product?.images[0];
+      });
   }
 
   goBack(): void {

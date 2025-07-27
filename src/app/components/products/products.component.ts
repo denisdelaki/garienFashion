@@ -48,7 +48,13 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.allProducts = this.productService.getProducts();
+    this.productService.getProducts().subscribe((products) => {
+      products.map((item: any) => {
+        this.allProducts = [...this.allProducts, item as Product];
+      });
+      console.log('All products:', this.allProducts);
+      this.filterProducts();
+    });
 
     // Subscribe to route parameters to get category
     this.routeSubscription = this.route.paramMap.subscribe((params) => {

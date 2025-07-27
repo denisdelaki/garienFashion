@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Product, ProductFormData } from '../models/product.model';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,10 @@ export class ProductService {
     )
   );
 
-  constructor() {}
-  private saveProducts(products: Product[]): void {
+  private apiUrl = 'http://localhost:3000/products';
+
+  constructor(private http: HttpClient) {}
+  private saveProducts(products: Product[]) {
     localStorage.setItem('products', JSON.stringify(products));
     this.productsSubject.next(products);
   }
@@ -270,8 +273,10 @@ export class ProductService {
   ];
 
   // Get all products
-  getProducts(): Product[] {
-    return this.products;
+  getProducts(): Observable<Product[]> {
+    return this.http
+      .get<Product[]>(this.apiUrl)
+      .pipe(map((products) => products || []));
   }
   setGender(gender: string): void {
     this.genderSubject.next(gender);
@@ -282,8 +287,8 @@ export class ProductService {
   }
 
   // Get product by ID
-  getProductById(id: number): Product | undefined {
-    return this.products.find((product) => product.id === id);
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
   // Get products by gender
@@ -314,6 +319,11 @@ export class ProductService {
     const currentProducts = this.productsSubject.value;
     const updatedProducts = [...currentProducts, newProduct];
     this.saveProducts(updatedProducts);
+    this.http
+      .post<Product[]>(`${this.apiUrl}`, updatedProducts)
+      .subscribe((res) => {
+        console.log('Products saved successfully:', res);
+      });
 
     return newProduct;
   }
@@ -344,18 +354,8 @@ export class ProductService {
     return updatedProduct;
   }
 
-  deleteProduct(id: number): boolean {
-    const currentProducts = this.productsSubject.value;
-    const filteredProducts = currentProducts.filter(
-      (product) => product.id !== id
-    );
-
-    if (filteredProducts.length === currentProducts.length) {
-      return false; // Product not found
-    }
-
-    this.saveProducts(filteredProducts);
-    return true;
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   private getFilteredProducts(

@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { environment } from '../environment/environment';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideHttpClient } from '@angular/common/http';
 // import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
@@ -14,5 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideAnimationsAsync(),
+    provideHttpClient(),
   ],
 };
