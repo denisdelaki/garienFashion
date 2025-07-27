@@ -319,11 +319,9 @@ export class ProductService {
     const currentProducts = this.productsSubject.value;
     const updatedProducts = [...currentProducts, newProduct];
     this.saveProducts(updatedProducts);
-    this.http
-      .post<Product[]>(`${this.apiUrl}`, updatedProducts)
-      .subscribe((res) => {
-        console.log('Products saved successfully:', res);
-      });
+    this.http.post<Product>(`${this.apiUrl}`, newProduct).subscribe((res) => {
+      console.log('Product saved successfully:', res);
+    });
 
     return newProduct;
   }
