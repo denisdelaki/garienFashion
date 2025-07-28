@@ -25,7 +25,7 @@ export class ProductService {
     )
   );
 
-  private apiUrl = 'http://localhost:3000/products';
+  private apiUrl = 'https://garien-fashion-backend.vercel.app/products';
 
   constructor(private http: HttpClient) {}
   private saveProducts(products: Product[]) {
