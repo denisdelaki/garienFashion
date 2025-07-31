@@ -35,7 +35,7 @@ export class ProductDetailsComponent implements OnInit {
       .getProductById(id)
       .subscribe((product: Product | undefined) => {
         this.product = product;
-        this.selectedImage = this.product?.images[0];
+        this.selectedImage = this.product?.imageUrl || this.product?.images[0];
       });
   }
 

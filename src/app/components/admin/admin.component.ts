@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
@@ -64,13 +65,28 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Check if user is super user
+    // Superuser access control
     if (!this.authService.isSuperUser) {
       this.router.navigate(['/']);
       return;
     }
 
-    this.loadProducts();
+    // Subscribe to reactive product store
+    this.productService
+      .getProductsObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((products: Product[]) => {
+        this.products = products;
+      });
+
+    // Call API only if local store is empty
+    if (this.productService.getCurrentProducts().length === 0) {
+      this.productService
+        .getProducts()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe();
+    }
+
     this.initializeForm();
   }
 
@@ -99,15 +115,6 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private initializeForm(): void {
     this.resetForm();
-  }
-
-  private loadProducts(): void {
-    this.productService
-      .getProducts()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((products: Product[]) => {
-        this.products = products;
-      });
   }
 
   // Form Array Getters
@@ -140,9 +147,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.sizesArray.push(this.formBuilder.control(size));
     } else {
       const index = this.sizesArray.controls.findIndex((x) => x.value === size);
-      if (index >= 0) {
-        this.sizesArray.removeAt(index);
-      }
+      if (index >= 0) this.sizesArray.removeAt(index);
     }
   }
 
@@ -154,18 +159,14 @@ export class AdminComponent implements OnInit, OnDestroy {
       const index = this.colorsArray.controls.findIndex(
         (x) => x.value === color
       );
-      if (index >= 0) {
-        this.colorsArray.removeAt(index);
-      }
+      if (index >= 0) this.colorsArray.removeAt(index);
     }
   }
 
-  // Check if size is selected
   isSizeSelected(size: string): boolean {
     return this.sizesArray.controls.some((control) => control.value === size);
   }
 
-  // Check if color is selected
   isColorSelected(color: string): boolean {
     return this.colorsArray.controls.some((control) => control.value === color);
   }
@@ -196,34 +197,25 @@ export class AdminComponent implements OnInit, OnDestroy {
       description: product.description,
       price: product.price,
       category: product.category,
-      imageUrl: product.images,
+      imageUrl: product.imageUrl || product.images?.[0] || '',
       inStock: product.inStock,
       quantity: product.quantity,
     });
 
-    // Clear and populate images
     this.imagesArray.clear();
-    if (product.images) {
-      product.images.forEach((image) => {
-        this.imagesArray.push(this.formBuilder.control(image));
-      });
-    }
+    product.images?.slice(1).forEach((img) => {
+      this.imagesArray.push(this.formBuilder.control(img));
+    });
 
-    // Clear and populate sizes
     this.sizesArray.clear();
-    if (product.sizes) {
-      product.sizes.forEach((size) => {
-        this.sizesArray.push(this.formBuilder.control(size));
-      });
-    }
+    product.sizes?.forEach((size) => {
+      this.sizesArray.push(this.formBuilder.control(size));
+    });
 
-    // Clear and populate colors
     this.colorsArray.clear();
-    if (product.colors) {
-      product.colors.forEach((color) => {
-        this.colorsArray.push(this.formBuilder.control(color));
-      });
-    }
+    product.colors?.forEach((color) => {
+      this.colorsArray.push(this.formBuilder.control(color));
+    });
   }
 
   private resetForm(): void {
@@ -236,8 +228,6 @@ export class AdminComponent implements OnInit, OnDestroy {
       inStock: true,
       quantity: 0,
     });
-
-    // Clear form arrays
     this.imagesArray.clear();
     this.sizesArray.clear();
     this.colorsArray.clear();
@@ -254,7 +244,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         sizes: this.sizesArray.value,
         colors: this.colorsArray.value,
       };
-      console.log('form', formData);
+
       if (this.editingProduct) {
         this.updateProduct(formData);
       } else {
@@ -266,67 +256,77 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private addProduct(productData: ProductFormData): void {
-    try {
-      this.productService.addProduct(productData);
-      this.hideForm();
-      this.showSuccessMessage('Product added successfully!');
-    } catch (error) {
-      this.showErrorMessage('Failed to add product. Please try again.');
-    }
+    this.productService
+      .addProduct(productData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.hideForm();
+          this.showSuccessMessage('Product added successfully!');
+        },
+        error: () =>
+          this.showErrorMessage('Failed to add product. Please try again.'),
+      });
   }
 
   private updateProduct(productData: ProductFormData): void {
     if (!this.editingProduct) return;
 
-    try {
-      this.productService.updateProduct(this.editingProduct.id, productData);
-      this.hideForm();
-      this.showSuccessMessage('Product updated successfully!');
-    } catch (error) {
-      this.showErrorMessage('Failed to update product. Please try again.');
-    }
+    this.productService
+      .updateProduct(this.editingProduct.id, productData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          if (updated) {
+            this.hideForm();
+            this.showSuccessMessage('Product updated successfully!');
+          } else {
+            this.showErrorMessage('Product not found.');
+          }
+        },
+        error: () =>
+          this.showErrorMessage('Failed to update product. Please try again.'),
+      });
   }
 
-  // Delete Product
   deleteProduct(product: Product): void {
     if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
-      try {
-        this.productService.deleteProduct(product.id);
-        this.showSuccessMessage('Product deleted successfully!');
-      } catch (error) {
-        this.showErrorMessage('Failed to delete product. Please try again.');
-      }
+      this.productService
+        .deleteProduct(product.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => this.showSuccessMessage('Product deleted successfully!'),
+          error: () =>
+            this.showErrorMessage(
+              'Failed to delete product. Please try again.'
+            ),
+        });
     }
   }
 
-  // Search and Filter
   get filteredProducts(): Product[] {
     let filtered = this.products;
 
     if (this.searchTerm) {
-      const searchLower = this.searchTerm.toLowerCase();
+      const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchLower) ||
-          product.description.toLowerCase().includes(searchLower) ||
-          product.category.toLowerCase().includes(searchLower)
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.description.toLowerCase().includes(term) ||
+          p.category.toLowerCase().includes(term)
       );
     }
 
     if (this.selectedCategory) {
-      filtered = filtered.filter(
-        (product) => product.category === this.selectedCategory
-      );
+      filtered = filtered.filter((p) => p.category === this.selectedCategory);
     }
 
     return filtered;
   }
 
-  // Form Validation Helpers
   private markFormGroupTouched(): void {
-    Object.keys(this.productForm.controls).forEach((key) => {
-      const control = this.productForm.get(key);
-      control?.markAsTouched();
+    Object.values(this.productForm.controls).forEach((control) => {
+      control.markAsTouched();
     });
   }
 
@@ -346,18 +346,14 @@ export class AdminComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // Success/Error Messages
   private showSuccessMessage(message: string): void {
-    // You can implement a toast service or simple alert
     alert(message);
   }
 
   private showErrorMessage(message: string): void {
-    // You can implement a toast service or simple alert
     alert(message);
   }
 
-  // Utility Methods
   formatPrice(price: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

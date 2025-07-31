@@ -253,7 +253,15 @@
     <div class="products-grid" *ngIf="filteredProducts.length > 0">
       <div *ngFor="let product of filteredProducts" class="product-card">
         <div class="product-image">
-          <img [src]="product.images" [alt]="product.name" />
+          <img
+            [src]="
+              product.imageUrl ||
+              (product.images && product.images.length > 0
+                ? product.images[0]
+                : '')
+            "
+            [alt]="product.name"
+          />
           <div
             class="product-status"
             [class.in-stock]="product.inStock"

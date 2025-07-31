@@ -38,6 +38,7 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   private favoritesSubscription: Subscription = new Subscription();
   private genderFilterSubscription: Subscription = new Subscription();
   private searchFilterSubscription: Subscription = new Subscription();
+  private productsSubscription: Subscription = new Subscription();
 
   constructor(
     private cartService: CartService,
@@ -48,13 +49,16 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.productService.getProducts().subscribe((products) => {
-      products.map((item: any) => {
-        this.allProducts = [...this.allProducts, item as Product];
+    // Initial load from API
+    this.productService.getProducts().subscribe((products) => {});
+
+    // Subscribe to real-time product updates
+    this.productsSubscription = this.productService
+      .getProductsObservable()
+      .subscribe((products) => {
+        this.allProducts = products;
+        this.filterProducts();
       });
-      console.log('All products:', this.allProducts);
-      this.filterProducts();
-    });
 
     // Subscribe to route parameters to get category
     this.routeSubscription = this.route.paramMap.subscribe((params) => {
@@ -96,6 +100,7 @@ export class ProductsComponent implements OnInit, OnChanges, OnDestroy {
     this.favoritesSubscription.unsubscribe();
     this.genderFilterSubscription.unsubscribe();
     this.searchFilterSubscription.unsubscribe();
+    this.productsSubscription.unsubscribe();
   }
 
   addToCart(product: Product): void {
