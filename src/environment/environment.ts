@@ -1,5 +1,6 @@
 export const environment = {
-  production: false,
+  production: true,
+  apiUrl: 'https://garien-fashion-backend.vercel.app',
   firebase: {
     apiKey: 'AIzaSyDU5z3Rr2aEpSIdaDkyCrH_gVvTvJ_p4sU',
     authDomain: 'garienfashionhub.firebaseapp.com',

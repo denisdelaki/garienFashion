@@ -109,6 +109,46 @@
             ><strong>KSh {{ getFinalTotal() | number : "1.0-0" }}</strong></span
           >
         </div>
+        <div class="payment-section" *ngIf="cartItems.length > 0">
+          <h3>Payment Details</h3>
+
+          <mat-form-field appearance="outline" class="phone-field">
+            <mat-label>Phone Number (for MPesa)</mat-label>
+            <input
+              matInput
+              required
+              [(ngModel)]="phoneNumber"
+              placeholder="0712345678"
+              maxlength="13"
+              [disabled]="isProcessingPayment"
+            />
+            <mat-hint>Enter your MPesa phone number</mat-hint>
+          </mat-form-field>
+
+          <div class="payment-status" *ngIf="paymentStatus !== 'idle'">
+            <div class="status-indicator" [ngClass]="paymentStatus">
+              <mat-spinner
+                *ngIf="paymentStatus === 'processing'"
+                diameter="20"
+              ></mat-spinner>
+              <mat-icon *ngIf="paymentStatus === 'success'"
+                >check_circle</mat-icon
+              >
+              <mat-icon *ngIf="paymentStatus === 'failed'">error</mat-icon>
+            </div>
+            <span class="status-text">
+              {{
+                paymentStatus === "processing"
+                  ? "Processing payment..."
+                  : paymentStatus === "success"
+                  ? "Payment successful!"
+                  : paymentStatus === "failed"
+                  ? "Payment failed"
+                  : ""
+              }}
+            </span>
+          </div>
+        </div>
 
         <div class="cart-actions">
           <button
@@ -122,11 +162,20 @@
           <button
             mat-raised-button
             color="primary"
-            (click)="proceedToCheckout()"
             class="checkout-btn"
-            [disabled]="cartItems.length === 0"
+            (click)="proceedToCheckout()"
+            [disabled]="
+              cartItems.length === 0 || isProcessingPayment || !phoneNumber
+            "
           >
-            Proceed to Checkout
+            <mat-spinner
+              *ngIf="isProcessingPayment"
+              diameter="20"
+            ></mat-spinner>
+            <span *ngIf="!isProcessingPayment"
+              >Pay KES {{ getFinalTotal() | number : "1.0-0" }} with MPesa</span
+            >
+            <span *ngIf="isProcessingPayment">Processing...</span>
           </button>
         </div>
       </div>

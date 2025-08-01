@@ -8,6 +8,14 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
+import {
+  MpesaPaymentRequest,
+  PaymentService,
+} from '../../services/payment.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 export interface CartItem {
   product: Product;
@@ -24,6 +32,11 @@ export interface CartItem {
     MatIconModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    FormsModule,
   ],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
@@ -33,16 +46,23 @@ export class CartComponent implements OnInit, OnDestroy {
   shippingCost = 200; // Fixed shipping cost
   taxRate = 0.16; // 16% tax rate
 
+  phoneNumber = '';
+  isProcessingPayment = false;
+  paymentStatus = 'idle';
+
+  private paymentSubscription: Subscription = new Subscription();
   private cartSubscription: Subscription = new Subscription();
 
   constructor(
     private cartService: CartService,
+    private paymentService: PaymentService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.loadCartItems();
+    this.subscribeToPaymentStatus();
   }
 
   ngOnDestroy(): void {
@@ -54,6 +74,15 @@ export class CartComponent implements OnInit, OnDestroy {
     this.cartSubscription = this.cartService?.cartItems$.subscribe((items) => {
       this.cartItems = items;
     });
+  }
+
+  private subscribeToPaymentStatus(): void {
+    this.paymentSubscription = this.paymentService.paymentStatus$.subscribe(
+      (status) => {
+        this.paymentStatus = status;
+        this.isProcessingPayment = status === 'processing';
+      }
+    );
   }
 
   trackByProductId(index: number, item: CartItem): number {
@@ -112,23 +141,76 @@ export class CartComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Here you would typically navigate to checkout or open a checkout dialog
-    this.showSnackBar('Proceeding to checkout...', 'Close');
+    if (!this.phoneNumber) {
+      this.showSnackBar('Please enter your phone number');
+      return;
+    }
 
-    // For now, we'll just log the order details
-    const orderSummary = {
-      items: this.cartItems,
-      subtotal: this.getTotalPrice(),
-      shipping: this.shippingCost,
-      tax: this.getTaxAmount(),
-      total: this.getFinalTotal(),
-      totalQuantity: this.getTotalQuantity(),
+    this.initiatePayment();
+  }
+
+  private initiatePayment(): void {
+    const paymentData: MpesaPaymentRequest = {
+      phone: this.paymentService.formatPhoneNumber(this.phoneNumber),
+      amount: Math.round(this.getFinalTotal()),
+      account_reference: `GF-${Date.now()}`,
+      transaction_desc: `Payment for ${this.getTotalQuantity()} items from Garien Fashion`,
     };
 
-    console.log('Order Summary:', orderSummary);
+    this.paymentService.initiatePayment(paymentData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.showSnackBar(
+            'Payment request sent! Check your phone for MPesa prompt',
+            'Close'
+          );
 
-    // Navigate to checkout page (you'll need to create this route)
-    // this.router.navigate(['/checkout']);
+          // Start checking payment status
+          if (response.data?.CheckoutRequestID) {
+            this.checkPaymentStatus(response.data.CheckoutRequestID);
+          }
+        } else {
+          this.showSnackBar(`Payment failed: ${response.message}`, 'Close');
+          this.paymentService.updatePaymentStatus('failed');
+        }
+      },
+      error: (error) => {
+        console.error('Payment error:', error);
+        this.showSnackBar('Payment failed. Please try again.', 'Close');
+        this.paymentService.updatePaymentStatus('failed');
+      },
+    });
+  }
+
+  private checkPaymentStatus(checkoutRequestID: string): void {
+    // Check status after 30 seconds (give user time to complete payment)
+    setTimeout(() => {
+      this.paymentService.checkPaymentStatus(checkoutRequestID).subscribe({
+        next: (statusResponse) => {
+          if (statusResponse.data?.ResultCode === '0') {
+            this.paymentService.updatePaymentStatus('success');
+            this.showSnackBar('Payment successful! Order confirmed.', 'Close');
+            this.cartService.clearCart();
+            // Redirect to order confirmation or success page
+            // this.router.navigate(['/order-success']);
+          } else {
+            this.paymentService.updatePaymentStatus('failed');
+            this.showSnackBar(
+              'Payment was not completed. Please try again.',
+              'Close'
+            );
+          }
+        },
+        error: (error) => {
+          console.error('Status check error:', error);
+          this.paymentService.updatePaymentStatus('unknown');
+          this.showSnackBar(
+            'Unable to verify payment status. Please contact support.',
+            'Close'
+          );
+        },
+      });
+    }, 30000);
   }
 
   private showSnackBar(
