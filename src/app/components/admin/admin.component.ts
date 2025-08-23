@@ -14,11 +14,19 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { ImagesService } from '../../services/images.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule,
+    HttpClientModule,
+  ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
@@ -31,6 +39,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   isFormVisible = false;
   searchTerm = '';
   selectedCategory = '';
+  mainImageType: 'url' | 'upload' = 'url'; // Track main image input type
+  imageTypes: ('url' | 'upload')[] = []; // Track input type for additional images
+  mainImagePreview: string | null = null; // Preview for main image
+  imagePreviews: (string | null)[] = []; // Previews for additional images
 
   categories = [
     "Men's Clothing",
@@ -58,6 +70,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private productService: ProductService,
+    private imageService: ImagesService,
     private formBuilder: FormBuilder,
     private router: Router
   ) {
@@ -65,13 +78,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Superuser access control
     if (!this.authService.isSuperUser) {
       this.router.navigate(['/']);
       return;
     }
 
-    // Subscribe to reactive product store
     this.productService
       .getProductsObservable()
       .pipe(takeUntil(this.destroy$))
@@ -79,7 +90,6 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.products = products;
       });
 
-    // Call API only if local store is empty
     if (this.productService.getCurrentProducts().length === 0) {
       this.productService
         .getProducts()
@@ -103,7 +113,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       category: ['', Validators.required],
       imageUrl: [
         '',
-        [Validators.required, Validators.pattern(/^https?:\/\/.+/)],
+        [Validators.required, Validators.pattern(/^https?:\/\/.+|^$/)],
       ],
       images: this.formBuilder.array([]),
       inStock: [true],
@@ -133,12 +143,106 @@ export class AdminComponent implements OnInit, OnDestroy {
   // Add/Remove Images
   addImageField(): void {
     this.imagesArray.push(
-      this.formBuilder.control('', [Validators.pattern(/^https?:\/\/.+/)])
+      this.formBuilder.control('', [Validators.pattern(/^https?:\/\/.+|^$/)])
     );
+    this.imageTypes.push('url');
+    this.imagePreviews.push(null);
   }
 
   removeImageField(index: number): void {
     this.imagesArray.removeAt(index);
+    this.imageTypes.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+  }
+
+  // Handle Main Image Type Change
+  onMainImageTypeChange(): void {
+    this.productForm.get('imageUrl')?.reset();
+    this.mainImagePreview = null;
+  }
+
+  // Handle Additional Image Type Change
+  onImageTypeChange(index: number): void {
+    this.imagesArray.at(index).reset();
+    this.imagePreviews[index] = null;
+  }
+
+  // Handle Main Image File Upload
+  onMainImageFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (!file.type.startsWith('image/')) {
+        this.showErrorMessage('Please select an image file.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        this.showErrorMessage('Image size must be less than 5MB.');
+        return;
+      }
+
+      // Generate preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.mainImagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      // Upload image and get URL
+      this.imageService
+        .uploadImage(file)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (url: any) => {
+            this.productForm.get('imageUrl')?.setValue(url);
+          },
+          error: () => {
+            this.showErrorMessage('Failed to upload image. Please try again.');
+            this.productForm.get('imageUrl')?.setValue('');
+            this.mainImagePreview = null;
+          },
+        });
+    }
+  }
+
+  // Handle Additional Image File Upload
+  onAdditionalImageFileChange(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (!file.type.startsWith('image/')) {
+        this.showErrorMessage('Please select an image file.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        this.showErrorMessage('Image size must be less than 5MB.');
+        return;
+      }
+
+      // Generate preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreviews[index] = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      // Upload image and get URL
+      this.imageService
+        .uploadImage(file)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (url: any) => {
+            this.imagesArray.at(index).setValue(url);
+          },
+          error: () => {
+            this.showErrorMessage('Failed to upload image. Please try again.');
+            this.imagesArray.at(index).setValue('');
+            this.imagePreviews[index] = null;
+          },
+        });
+    }
   }
 
   // Handle Size Selection
@@ -203,8 +307,12 @@ export class AdminComponent implements OnInit, OnDestroy {
     });
 
     this.imagesArray.clear();
+    this.imageTypes = [];
+    this.imagePreviews = [];
     product.images?.slice(1).forEach((img) => {
       this.imagesArray.push(this.formBuilder.control(img));
+      this.imageTypes.push('url');
+      this.imagePreviews.push(img);
     });
 
     this.sizesArray.clear();
@@ -216,6 +324,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     product.colors?.forEach((color) => {
       this.colorsArray.push(this.formBuilder.control(color));
     });
+
+    this.mainImageType = product.imageUrl ? 'url' : 'upload';
+    this.mainImagePreview = product.imageUrl || product.images?.[0] || null;
   }
 
   private resetForm(): void {
@@ -231,6 +342,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.imagesArray.clear();
     this.sizesArray.clear();
     this.colorsArray.clear();
+    this.mainImageType = 'url';
+    this.imageTypes = [];
+    this.imagePreviews = [];
+    this.mainImagePreview = null;
   }
 
   // Submit Form
@@ -357,7 +472,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   formatPrice(price: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'KES',
     }).format(price);
   }
 

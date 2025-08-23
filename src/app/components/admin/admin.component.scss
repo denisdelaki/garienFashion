@@ -432,6 +432,42 @@
   margin-bottom: 20px;
 }
 
+.image-input-options {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+
+  .input-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+.image-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  .image-input {
+    flex: 1;
+  }
+}
+
+.image-preview {
+  display: block;
+  margin-top: 10px;
+
+  img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .admin-products-container {

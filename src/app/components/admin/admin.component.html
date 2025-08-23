@@ -150,19 +150,72 @@
         <h3>Images</h3>
 
         <div class="form-group">
-          <label for="imageUrl">Main Image URL *</label>
-          <input
-            type="url"
-            id="imageUrl"
-            formControlName="imageUrl"
-            class="form-control"
-            [class.is-invalid]="isFieldInvalid('imageUrl')"
-          />
-          <div class="invalid-feedback" *ngIf="isFieldInvalid('imageUrl')">
-            {{ getFieldError("imageUrl") }}
+          <label>Main Image *</label>
+          <div class="image-input-options">
+            <div class="input-option">
+              <input
+                type="radio"
+                id="mainImageUrl"
+                name="mainImageType"
+                value="url"
+                [(ngModel)]="mainImageType"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onMainImageTypeChange()"
+              />
+              <label for="mainImageUrl">Paste URL</label>
+            </div>
+            <div class="input-option">
+              <input
+                type="radio"
+                id="mainImageUpload"
+                name="mainImageType"
+                value="upload"
+                [(ngModel)]="mainImageType"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onMainImageTypeChange()"
+              />
+              <label for="mainImageUpload">Upload Image</label>
+            </div>
+          </div>
+
+          <!-- URL Input for Main Image -->
+          <div *ngIf="mainImageType === 'url'" class="form-group">
+            <input
+              type="url"
+              id="imageUrl"
+              formControlName="imageUrl"
+              class="form-control"
+              placeholder="Enter image URL"
+              [class.is-invalid]="isFieldInvalid('imageUrl')"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('imageUrl')">
+              {{ getFieldError("imageUrl") }}
+            </div>
+          </div>
+
+          <!-- File Input for Main Image -->
+          <div *ngIf="mainImageType === 'upload'" class="form-group">
+            <input
+              type="file"
+              id="mainImageFile"
+              accept="image/*"
+              (change)="onMainImageFileChange($event)"
+              class="form-control"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('imageUrl')">
+              {{ getFieldError("imageUrl") }}
+            </div>
+            <small *ngIf="mainImagePreview" class="image-preview">
+              <img
+                [src]="mainImagePreview"
+                alt="Main Image Preview"
+                width="100"
+              />
+            </small>
           </div>
         </div>
 
+        <!-- Additional Images -->
         <div class="additional-images">
           <label>Additional Images</label>
           <div formArrayName="images">
@@ -170,18 +223,67 @@
               *ngFor="let image of imagesArray.controls; let i = index"
               class="image-input-group"
             >
-              <input
-                type="url"
-                [formControlName]="i"
-                class="form-control"
-                placeholder="Image URL"
-              />
+              <div class="image-input-options">
+                <div class="input-option">
+                  <input
+                    type="radio"
+                    [id]="'imageType' + i"
+                    [name]="'imageType' + i"
+                    value="url"
+                    [(ngModel)]="imageTypes[i]"
+                    [ngModelOptions]="{ standalone: true }"
+                    (change)="onImageTypeChange(i)"
+                  />
+                  <label [for]="'imageType' + i">Paste URL</label>
+                </div>
+                <div class="input-option">
+                  <input
+                    type="radio"
+                    [id]="'imageTypeUpload' + i"
+                    [name]="'imageType' + i"
+                    value="upload"
+                    [(ngModel)]="imageTypes[i]"
+                    [ngModelOptions]="{ standalone: true }"
+                    (change)="onImageTypeChange(i)"
+                  />
+                  <label [for]="'imageTypeUpload' + i">Upload Image</label>
+                </div>
+              </div>
+
+              <!-- URL Input for Additional Image -->
+              <div *ngIf="imageTypes[i] === 'url'" class="image-input">
+                <input
+                  type="url"
+                  [formControlName]="i"
+                  class="form-control"
+                  placeholder="Image URL"
+                />
+              </div>
+
+              <!-- File Input for Additional Image -->
+              <div *ngIf="imageTypes[i] === 'upload'" class="image-input">
+                <input
+                  type="file"
+                  [id]="'additionalImage' + i"
+                  accept="image/*"
+                  (change)="onAdditionalImageFileChange($event, i)"
+                  class="form-control"
+                />
+                <small *ngIf="imagePreviews[i]" class="image-preview">
+                  <img
+                    [src]="imagePreviews[i]"
+                    alt="Image Preview"
+                    width="100"
+                  />
+                </small>
+              </div>
+
               <button
                 type="button"
                 class="btn btn-danger btn-sm"
                 (click)="removeImageField(i)"
               >
-                <i class="fas fa-trash"></i>
+                <mat-icon>delete</mat-icon>
               </button>
             </div>
           </div>
